@@ -1,0 +1,7 @@
+export * from './Home'
+export * from './Login'
+export * from './Payment'
+export * from './Splash'
+export * from './Passenger_Login'
+export * from './Onboarding'
+export * from './Profile'
