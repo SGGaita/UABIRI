@@ -5,6 +5,7 @@ import { View, Text } from 'react-native'
 import { Home, Login, Splash, Payment, Passenger, Onboarding } from './src/screens/index'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tabs from './src/navigation/tabs'
+import SplashScreen from 'react-native-splash-screen'
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,8 @@ const App = () => {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
+    SplashScreen.hide();
+
     setIsLoading(true)
     setCount(count + 1)
     if (isLoading && (count == 0)) {
@@ -29,7 +32,7 @@ const App = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: false
-        }} initialRouteName="Home">
+        }} initialRouteName="Onboarding">
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="Passenger" component={Passenger} />

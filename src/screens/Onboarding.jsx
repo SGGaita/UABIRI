@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient'
 
 import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 
-export const Onboarding = () => {
+export const Onboarding = ({navigation}) => {
 
     const renderHeader = () => {
         return (
@@ -95,7 +95,7 @@ export const Onboarding = () => {
                 colors={[COLORS.lime, COLORS.emerald]}
                 style={styles.linearGradient}
             >
-                <View style={{height:100, flex:1}}>
+                <View style={{height:20, flex:1}}>
                 {renderHeader()}
                 </View>
 
@@ -110,9 +110,6 @@ export const Onboarding = () => {
                         <View style={styles.buttons}>
                         {renderVehicleOwner()}
                         </View>
-                
-                
-                
                 </ScrollView>
                 
             </LinearGradient>

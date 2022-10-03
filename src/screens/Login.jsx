@@ -216,7 +216,9 @@ export const Login = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onPress={() => console.log("Home")}
+          onPress={() => {navigation.navigate("Home")
+        console.log("Navigate")
+        }}
         >
 <Text style={{color: COLORS.white, ...FONTS.h3}}>Continue</Text>
         </TouchableOpacity>

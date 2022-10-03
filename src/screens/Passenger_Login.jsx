@@ -1,4 +1,4 @@
-import react, {useState, useEffect} from 'react'
+import react, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -15,8 +15,9 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 
 import { COLORS, SIZES, icons, images, FONTS } from '../constants'
+import { Home, Onboarding } from '../screens'
 
-export const Passenger = () => {
+export const Passenger = ({ navigation }) => {
 
   const renderHeader = () => {
     return (
@@ -27,7 +28,11 @@ export const Passenger = () => {
           marginTop: SIZES.padding * 4,
           paddingHorizontal: SIZES.padding * 2
         }}
-        onPress={() => console.log("Login")}>
+        onPress={() => {
+          navigation.navigate("Onboarding")
+          console.log("Navigate")
+        }}>
+
         <Image
           source={icons.back}
           resizeMode="contain"
@@ -51,7 +56,7 @@ export const Passenger = () => {
           height: 150,
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection:'column'
+          flexDirection: 'column'
         }}
       >
         <Image
@@ -62,7 +67,7 @@ export const Passenger = () => {
             tintColor: COLORS.white
           }}
         />
-        
+
       </View>
     )
   }
@@ -175,9 +180,12 @@ export const Passenger = () => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onPress={() => console.log("Navigate to home screen")}
+          onPress={() => {
+            navigation.navigate("Home")
+            console.log("Home")
+          }}
         >
-<Text style={{color: COLORS.white, ...FONTS.h3}}>Continue</Text>
+          <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
         </TouchableOpacity>
       </View>
     )

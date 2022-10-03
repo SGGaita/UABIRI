@@ -6,41 +6,26 @@ import {
 } from '../screens'
 import { COLORS, icons } from '../constants'
 import Svg, { Path } from 'react-native-svg'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const Tab = createBottomTabNavigator()
 const Tabs = () => {
     return (
         <Tab.Navigator
-            tabBarOption={{
-                showLabel: false,
-                style: {
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: "transparent",
-                    elevation: 0
-                },
-                tabBarButton: (props) => {
-                    <TabBarCustomButton
-                        {...props}
-                    />
-                }
-            }}
+            screenOptions={{
+                headerShown: false,
+                tabBarShowLabel: false
+            }
+            }
         >
             <Tab.Screen
-                name="Home"
+                name="Welcome"
                 component={Home}
                 options={{
-                    tabBarIcon: ({ focused }) => {
+                    tabBarIcon: ({ focused, color, size }) => {
                         <Image
                             source={icons.more}
-                            resizeMode="contain"
-                            style={{
-                                width: 25,
-                                height: 25,
-                                tintColor: focused ? COLORS.white : COLORS.secondary
-                            }}
+                            style={{ width: 25, height: 25, borderColor: COLORS.black, tintColor: COLORS.black }}
                         />
                     }
                 }}
@@ -49,17 +34,10 @@ const Tabs = () => {
             <Tab.Screen
                 name="Payment"
                 component={Payment}
+
                 options={{
-                    tabBarIcon: ({ focused }) => {
-                        <Image
-                            source={icons.scan}
-                            resizeMode="contain"
-                            style={{
-                                width: 25,
-                                height: 25,
-                                tintColor: focused ? COLORS.white : COLORS.secondary
-                            }}
-                        />
+                    tabBarIcon: ({ focused, color, size }) =>{
+                        return <Ionicons name="logo-bitcoin" color={color} size={size} />
                     }
                 }}
             />
@@ -67,17 +45,11 @@ const Tabs = () => {
                 name="Profile"
                 component={Profile}
                 options={{
-                    tabBarIcon: ({ focused }) => {
-                        <Image
-                            source={icons.user}
-                            resizeMode="contain"
-                            style={{
-                                width: 25,
-                                height: 25,
-                                tintColor: focused ? COLORS.white : COLORS.secondary
-                            }}
-                        />
+                    tabBarIcon: ({ focused, color, size }) => {
+                        return <Ionicons name="logo-bitcoin" color={color} size={size} />
                     }
+
+
                 }}
             />
         </Tab.Navigator>
