@@ -17,7 +17,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 
 import { COLORS, SIZES, icons, images, FONTS } from '../constants'
-import {Home,Onboarding} from '../screens'
+import {Home,Onboarding,Conductor} from '../screens'
 
 export const Login = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false)
@@ -42,7 +42,7 @@ export const Login = ({navigation}) => {
     })
     .catch((error) => {
         //setError(true)
-        navigation.navigate("Home")
+        navigation.navigate("Conductor")
     });
             
        

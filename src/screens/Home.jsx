@@ -12,56 +12,36 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
 import { COLORS, SIZES, FONTS, icons, images } from '../constants'
+import { SearchBar } from '../components/index'
+import { Regions } from '../dummy/data'
+import { doc, onSnapshot } from "firebase/firestore";
+import { db, storage } from "../../config";
 
 
 
 
-export const Home = ({ route, navigation }) => {
 
-  const [data, setData] = useState({})
-  const [sacco, setSacco] = useState("");
-  //const [alias,pnumber] = route.params
+export const Home = ({navigation, route }) => {
 
-  const saccos = [
-    {
-      id: 1,
-      name: "Lopha",
-    },
-    {
-      id: 2,
-      name: "Latema"
-    },
-    {
-      id: 3,
-      name: "Umoinner"
-    },
-    {
-      id: 4,
-      name: "Super Metro"
-    }
-  ];
+  const saccos = () => {
 
+    return Regions.map(x => x.saccos)[0]
+  }
+
+  const [saccoData, setSaccos] = useState(saccos())
+  const [searchText, setSearchText] = useState("");
+  const [currentSelected, setcurrentSelected] = useState([0])
+ 
 
   useEffect(() => {
-    setData(saccos)
-    //console.log("Data",JSON.stringify(alias)) 
+    console.log(route.params)
+    //console.log("Flat Data ", saccoData)
+
   }, []);
 
 
-  //handle filter
-  const handleSaccoFilter = () => {
-    console.log("Saccos", data)
-    console.log("Search term", sacco)
-    if (!sacco) {
-      setData(data)
-    } else {
-      let filteredData = data.filter(x => x.name === sacco)
 
-      console.log("Filtered Data", filteredData)
-      setData(filteredData)
-    }
 
-  }
   //Render the search input field
   const renderSearch = () => {
     return (
@@ -71,94 +51,111 @@ export const Home = ({ route, navigation }) => {
           flex: 1,
 
         }}>
-        {/**Alias */}
-        <View style={{ marginTop: SIZES.padding * 1 }}>
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              left: 10,
-              bottom: 10,
-              height: 30,
-              width: 30
-            }}
-            onPress={() => handleSaccoFilter()
-              //TODO create a filter function to filter the list of saccos
-
-            }
-          >
-            <Image
-              source={icons.search}
+        {/**Search bar */}
+        <SearchBar searchText={searchText} setSearchText={setSearchText} />
+        <View><Text style={{ color: COLORS.black }}>{searchText}</Text></View>
+        {/* <View>{renderButton()}</View> */}
+        <View><Text style={{ fontWeight: "700", marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h1 }}>Saccos</Text></View>
+        <FlatList horizontal={true} style={styles.flatList} data={saccoData} renderItem={renderSaccos} showsHorizontalScrollIndicator={false} />
+        
+        <Text
+          style={{
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            ...FONTS.h2,
+            fontWeight: "700",
+            color: COLORS.black
+          }}>
+          Routes
+        </Text>
+        {/*Render Routes list*/}
+        {saccoData[currentSelected].routes.map((data, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
               style={{
-                height: 20,
-                width: 20,
-                tintColor: COLORS.black
+                width: '100%',
+                height: 100,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginVertical: 10,
+                backgroundColor: COLORS.white,
+                borderRadius: 20,
+                elevation: 4,
+                position: "relative",
+                paddingHorizontal: 15,
+                flexDirection: 'row',
               }}
-            />
-          </TouchableOpacity>
-          <TextInput style={{
-            marginVertical: SIZES.padding,
-            paddingHorizontal: SIZES.padding * 5,
-            border: COLORS.grey,
-            borderWidth: 1,
-            borderRadius: 20,
-            height: 40,
-            color: COLORS.black,
-            ...FONTS.body3
-          }}
-            placeholder="Search Sacco"
-            placeholderTextColor={COLORS.secondary}
+              onPress={()=> navigation.navigate("Payment", {
+                routeID: data
+              })}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ color: COLORS.black, marginRight: 5, fontWeight: "400", ...FONTS.body2 }}>{index + 1}.</Text><Text style={{ color: COLORS.black, fontWeight: "700", ...FONTS.h2 }}>{data.routeName}</Text>
+              </View>
+              <View>
+                <Image source={icons.forward} resizeMode="contain" style={{
+                  width: 20,
+                  height: 20,
+                  tintColor: COLORS.black
+                }} />
+              </View>
+            </TouchableOpacity>
+          )
 
-            selectionColor={COLORS.black}
-            value={sacco}
-            onChangeText={text => {
-              setSacco(text)
+        })}
 
-            }}
-          />
-        </View>
-        <View>{renderButton()}</View>
-        <View><Text style={{ marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h2 }}>Saccos</Text></View>
-        <FlatList style={styles.flatList} data={data} renderItem={renderSaccos} keyExtractor={item => item.id} />
 
       </View>
     )
   }
+
+
 
   //render saccos list
-  const renderSaccos = ({ item }) => {
+  const renderSaccos = ({ item, index }) => {
     return (
-      <TouchableOpacity style={{ height: 80, backgroundColor: COLORS.gray, marginVertical: 5 }}
-        onPress={() => navigation.navigate("Payment")}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          alignItems: "center",
+          justifyContent: "space-evenly",
+          height: 70,
+          width: 150,
+          marginHorizontal: 10,
+          backgroundColor: currentSelected == index ? COLORS.yellow : COLORS.white,
+          marginVertical: 5,
+          borderRadius: 20,
+          elevation: 5
+        }}
+        onPress={() => setcurrentSelected(index)}
       >
-        <View style={{ paddingHorizontal: 30, marginTop: 16 }}>
-          <Text style={{ color: COLORS.lightGreen, ...FONTS.h2 }}>
-            Sacco name:
-          </Text>
-          <Text style={{ color: COLORS.black, ...FONTS.h3 }}>{item.name}</Text>
+        <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+          <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>
         </View>
       </TouchableOpacity>
-
     )
   }
 
-  const renderButton = () => {
-    return (
-      <View style={{ margin: SIZES.padding * 1 }}>
-        <TouchableOpacity
-          style={{
-            height: 60,
-            backgroundColor: COLORS.black,
-            borderRadius: SIZES.radius / 1.5,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onPress={handleSaccoFilter}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Search</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+  //render button 
+  // const renderButton = () => {
+  //   return (
+  //     <View style={{ margin: SIZES.padding * 1 }}>
+  //       <TouchableOpacity
+  //         style={{
+  //           height: 60,
+  //           backgroundColor: COLORS.black,
+  //           borderRadius: SIZES.radius / 1.5,
+  //           alignItems: 'center',
+  //           justifyContent: 'center'
+  //         }}
+
+  //       >
+  //         <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Search</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   )
+  // }
 
 
 
@@ -166,10 +163,12 @@ export const Home = ({ route, navigation }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
+      <ScrollView>
+        <View style={styles.searchBar}>
+          {renderSearch()}
+        </View>
+      </ScrollView>
 
-      <View style={styles.searchBar}>
-        {renderSearch()}
-      </View>
     </KeyboardAvoidingView>
 
 

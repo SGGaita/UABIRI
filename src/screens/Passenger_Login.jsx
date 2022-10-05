@@ -184,10 +184,13 @@ export const Passenger = ({ navigation }) => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onPress={() => {
-            navigation.navigate("Home",{alias:name,pnumber:phoneNumber})
-            
-          }}
+          onPress={() => 
+            //console.log(name)
+             navigation.navigate("Home",{
+               name: 89,
+               phoneNumber: 90
+             })
+            }
         >
           <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
         </TouchableOpacity>

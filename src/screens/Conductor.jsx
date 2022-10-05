@@ -11,8 +11,9 @@ import {
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
+import { SearchBar } from '../components'
 import { COLORS, SIZES, FONTS, icons, images } from '../constants'
-import {transactions} from '../dummy/data'
+import { transactions } from '../dummy/data'
 
 
 
@@ -20,14 +21,14 @@ import {transactions} from '../dummy/data'
 export const Conductor = ({ route, navigation }) => {
 
   const [data, setData] = useState({})
-  const [sacco, setSacco] = useState("");
+  const [searchText, setSearchText] = useState("");
   //const [alias,pnumber] = route.params
 
-  
+
 
   useEffect(() => {
     setData(transactions)
-    console.log("Data",transactions) 
+    console.log("Data", transactions)
   }, []);
 
 
@@ -54,70 +55,46 @@ export const Conductor = ({ route, navigation }) => {
           flex: 1,
 
         }}>
-        {/**Alias */}
-        <View style={{ marginTop: SIZES.padding * 1 }}>
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              left: 10,
-              bottom: 10,
-              height: 30,
-              width: 30
-            }}
-            onPress={() => handleSaccoFilter()
-              //TODO create a filter function to filter the list of saccos
-
-            }
-          >
-            <Image
-              source={icons.search}
-              style={{
-                height: 20,
-                width: 20,
-                tintColor: COLORS.black
-              }}
-            />
-          </TouchableOpacity>
-          <TextInput style={{
-            marginVertical: SIZES.padding,
-            paddingHorizontal: SIZES.padding * 5,
-            border: COLORS.grey,
-            borderWidth: 1,
-            borderRadius: 20,
-            height: 40,
-            color: COLORS.black,
-            ...FONTS.body3
-          }}
-            placeholder="Search by Mpesa Code"
-            placeholderTextColor={COLORS.secondary}
-
-            selectionColor={COLORS.black}
-            value={sacco}
-            onChangeText={text => {
-              setSacco(text)
-
-            }}
-          />
-        </View>
+        {/**Search bar */}
+        <SearchBar searchText={searchText} setSearchText={setSearchText} />
         <View>{renderButton()}</View>
         <View><Text style={{ marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h2 }}>Latest transactions</Text></View>
-        <FlatList style={styles.flatList} data={data} renderItem={renderSaccos} keyExtractor={item => item.id} />
+        <FlatList style={styles.flatList} data={data} renderItem={renderTransactions} keyExtractor={item => item.id} />
 
       </View>
     )
   }
 
   //render saccos list
-  const renderSaccos = ({ item }) => {
+  const renderTransactions = ({ item }) => {
     return (
-      <TouchableOpacity style={{ height: 80, backgroundColor: COLORS.gray, marginVertical: 5 }}
+      <TouchableOpacity style={{ paddingVertical: 20, backgroundColor: COLORS.white, marginVertical: 5, shadowColor: COLORS.lightGray, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.2, shadowRadius: 3.5, elevation: 5 }}
         onPress={() => navigation.navigate("Payment")}
       >
-        <View style={{ paddingHorizontal: 30, marginTop: 16 }}>
-          <Text style={{ color: COLORS.lightGreen, ...FONTS.h2 }}>
+        <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
+          <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
             Transaction Code:
           </Text>
-          <Text style={{ color: COLORS.black, ...FONTS.h3 }}>{item.transactionCode}</Text>
+          <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.transactionCode}</Text>
+        </View>
+
+        <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
+          <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
+            Phone number:
+          </Text>
+          <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.phoneNumber}</Text>
+        </View>
+        <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
+          <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
+            Amount Paid:
+          </Text>
+          <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.amount}</Text>
+        </View>
+        <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
+          <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
+            Date:
+          </Text>
+          <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.date}</Text>
         </View>
       </TouchableOpacity>
 

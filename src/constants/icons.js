@@ -18,6 +18,7 @@ const user = require("../assets/icons/user.png");
 const wallet = require("../assets/icons/wallet.png");
 const search = require("../assets/icons/search.png");
 const home = require("../assets/icons/home.png");
+const forward = require("../assets/icons/forward.png")
 
 export default {
     back,
@@ -39,5 +40,6 @@ export default {
     user,
     wallet,
     home,
-    search
+    search,
+    forward
 }

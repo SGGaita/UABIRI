@@ -1,4 +1,4 @@
-import react,{useState} from 'react'
+import react,{useState, useEffect} from 'react'
 import {
   View,
   Text,
@@ -8,9 +8,14 @@ import {
 } from 'react-native'
 import { COLORS, SIZES, FONTS, icons } from '../constants'
 
-export const Payment = ({navigation}) => {
+export const Payment = ({navigation, route}) => {
 
   const [date,setDate] = useState(new Date())
+
+
+  useEffect(() => {
+   console.log("Params",route.params)
+  },[])
 
   const handlePayment = () => {
 

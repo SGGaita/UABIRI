@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const PassengerHome = () => {
+export const ConductorHome = () => {
   return (
     <View>
         <Text>Passenger Home</Text>
