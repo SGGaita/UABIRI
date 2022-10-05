@@ -12,39 +12,22 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
 import { COLORS, SIZES, FONTS, icons, images } from '../constants'
+import {transactions} from '../dummy/data'
 
 
 
 
-export const Home = ({ route, navigation }) => {
+export const Conductor = ({ route, navigation }) => {
 
   const [data, setData] = useState({})
   const [sacco, setSacco] = useState("");
   //const [alias,pnumber] = route.params
 
-  const saccos = [
-    {
-      id: 1,
-      name: "Lopha",
-    },
-    {
-      id: 2,
-      name: "Latema"
-    },
-    {
-      id: 3,
-      name: "Umoinner"
-    },
-    {
-      id: 4,
-      name: "Super Metro"
-    }
-  ];
-
+  
 
   useEffect(() => {
-    setData(saccos)
-    //console.log("Data",JSON.stringify(alias)) 
+    setData(transactions)
+    console.log("Data",transactions) 
   }, []);
 
 
@@ -105,7 +88,7 @@ export const Home = ({ route, navigation }) => {
             color: COLORS.black,
             ...FONTS.body3
           }}
-            placeholder="Search Sacco"
+            placeholder="Search by Mpesa Code"
             placeholderTextColor={COLORS.secondary}
 
             selectionColor={COLORS.black}
@@ -117,7 +100,7 @@ export const Home = ({ route, navigation }) => {
           />
         </View>
         <View>{renderButton()}</View>
-        <View><Text style={{ marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h2 }}>Saccos</Text></View>
+        <View><Text style={{ marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h2 }}>Latest transactions</Text></View>
         <FlatList style={styles.flatList} data={data} renderItem={renderSaccos} keyExtractor={item => item.id} />
 
       </View>
@@ -132,9 +115,9 @@ export const Home = ({ route, navigation }) => {
       >
         <View style={{ paddingHorizontal: 30, marginTop: 16 }}>
           <Text style={{ color: COLORS.lightGreen, ...FONTS.h2 }}>
-            Sacco name:
+            Transaction Code:
           </Text>
-          <Text style={{ color: COLORS.black, ...FONTS.h3 }}>{item.name}</Text>
+          <Text style={{ color: COLORS.black, ...FONTS.h3 }}>{item.transactionCode}</Text>
         </View>
       </TouchableOpacity>
 

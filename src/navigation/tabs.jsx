@@ -12,9 +12,15 @@ const Tab = createBottomTabNavigator()
 const Tabs = () => {
     return (
         <Tab.Navigator
+        
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: false
+                tabBarShowLabel: true,
+                activeTintColor: '#F60081',
+                tabBarStyle: {
+                    backgroundColor: COLORS.lime,
+                    borderTopColor: 'transparent'
+                  }
             }
             }
         >
@@ -22,10 +28,12 @@ const Tabs = () => {
                 name="Welcome"
                 component={Home}
                 options={{
+                    headerShown: true,
+                    title:"Welcome to Uabiri",
                     tabBarIcon: ({ focused, color, size }) => {
                         <Image
-                            source={icons.more}
-                            style={{ width: 25, height: 25, borderColor: COLORS.black, tintColor: COLORS.black }}
+                            source={icons.home}
+                            style={{ width: 25, height: 25, borderColor: COLORS.black, tintColor: COLORS.black, alignItems:"center" }}
                         />
                     }
                 }}

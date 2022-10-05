@@ -76,6 +76,20 @@ export const FONTS = {
     body5: { fontFamily: "Roboto-Regular", fontSize: SIZES.body5, lineHeight: 22 },
 };
 
+export const fontWeights = {
+    fn: "normal",
+    fb:"bold",
+    f100:"100",
+    f200:"200",
+    f300:"300",
+    f400:"400",
+    f500:"500",
+    f600:"600",
+    f700:"700",
+    f800:"800",
+    f900:"900"
+};
+
 const appTheme = { COLORS, SIZES, FONTS };
 
 export default appTheme;

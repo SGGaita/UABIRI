@@ -18,6 +18,8 @@ import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 import { Home, Onboarding } from '../screens'
 
 export const Passenger = ({ navigation }) => {
+  const [name, setName] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
 
   const renderHeader = () => {
     return (
@@ -30,7 +32,6 @@ export const Passenger = ({ navigation }) => {
         }}
         onPress={() => {
           navigation.navigate("Onboarding")
-          console.log("Navigate")
         }}>
 
         <Image
@@ -95,6 +96,8 @@ export const Passenger = ({ navigation }) => {
             placeholder="Enter your Alias or Full name"
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
+            value={name}
+            onChangeText={text=>setName(text)}
           />
         </View>
 
@@ -160,6 +163,7 @@ export const Passenger = ({ navigation }) => {
               placeholderTextColor={COLORS.white}
               selectionColor={COLORS.white}
               keyboardType="numeric"
+              onChangeText={text=>setPhoneNumber('+254'+''+text)}
             />
 
           </View>
@@ -181,8 +185,8 @@ export const Passenger = ({ navigation }) => {
             justifyContent: 'center'
           }}
           onPress={() => {
-            navigation.navigate("Home")
-            console.log("Home")
+            navigation.navigate("Home",{alias:name,pnumber:phoneNumber})
+            
           }}
         >
           <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>

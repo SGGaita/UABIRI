@@ -1,4 +1,6 @@
 import react, {useState, useEffect} from 'react'
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config";
 import {
   View,
   Text,
@@ -19,6 +21,32 @@ import {Home,Onboarding} from '../screens'
 
 export const Login = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false)
+  const [data, setData] = useState({})
+
+  //Text input states
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+ const [isSignedIn, setIsSignedIn] = useState(false)  
+
+  
+
+//Login 
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log("user", user)
+        navigation.navigate("Home")
+    })
+    .catch((error) => {
+        //setError(true)
+        navigation.navigate("Home")
+    });
+            
+       
+};
 
   const renderHeader = () => {
     return (
@@ -42,7 +70,7 @@ export const Login = ({navigation}) => {
           }}
         />
         <Text style={{ marginLeft: SIZES.padding * 1.5, color: COLORS.white, ...FONTS.h4 }}
-        >Login</Text>
+        >Back</Text>
       </TouchableOpacity>
     )
   }
@@ -89,77 +117,12 @@ export const Login = ({navigation}) => {
             color: COLORS.white,
             ...FONTS.body3
           }}
+          value={email}
             placeholder="Enter email"
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
+            onChangeText={text => setEmail(text)}
           />
-        </View>
-
-        {/**Phone number */}
-        <View style={{ marginTop: SIZES.padding * 2 }}>
-          <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>
-            Phone number
-          </Text>
-
-          <View style={{ flexDirection: 'row' }}>
-            {/*Country Code*/}
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 50,
-                marginHorizontal: 5,
-                borderBottomColor: COLORS.white,
-                borderBottomWidth: 1,
-                flexDirection: 'row',
-                ...FONTS.body2
-              }}
-              onPress={() => console.log("Show modal")}
-            >
-              <View style={{ justifyContent: 'center' }}>
-                <Image source={icons.down}
-                  style={{
-                    width: 10,
-                    height: 10,
-                    tintColor: COLORS.white
-                  }}
-                />
-              </View>
-              <View style={{ justifyContent: 'center', marginLeft: 5 }}>
-                <Image
-                  source={images.keFlag}
-                  resizeMode="contain"
-                  style={{
-                    width: 30,
-                    height: 30,
-                  }}
-                />
-              </View>
-              <View style={{ justifyContent: 'center', marginLeft: 5 }}>
-                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
-                  {/*TODO retrieve countries */}
-                  KE+254
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            {/*Phone number*/}
-            <TextInput
-              style={{
-                flex: 1,
-                marginVertical: SIZES.padding,
-                borderBottomColor: COLORS.white,
-                borderBottomWidth: 1,
-                height: 40,
-                color: COLORS.white,
-                ...FONTS.body3
-              }}
-              placeholder="Enter your Phone number"
-              placeholderTextColor={COLORS.white}
-              selectionColor={COLORS.white}
-              keyboardType="numeric"
-            />
-
-          </View>
         </View>
 
         {/**Password */}
@@ -175,10 +138,12 @@ export const Login = ({navigation}) => {
             color: COLORS.white,
             ...FONTS.body3
           }}
+          value={password}
             placeholder="Enter password"
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
             secureTextEntry={!showPassword}
+            onChangeText={text => setPassword(text)}
           />
           <TouchableOpacity
             style={{
@@ -216,9 +181,7 @@ export const Login = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onPress={() => {navigation.navigate("Home")
-        console.log("Navigate")
-        }}
+          onPress={handleLogin}
         >
 <Text style={{color: COLORS.white, ...FONTS.h3}}>Continue</Text>
         </TouchableOpacity>
