@@ -20,7 +20,7 @@ import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 import { Home, Onboarding } from '../screens'
 
 export const Passenger = ({ navigation }) => {
-  const [data, setData] = useState(null)
+  const [paymentData, setPaymentData] = useState(null)
   const [isSubmitting, setSubmit] = useState(false)
   const [errorMsg, seterrorMsg] = useState("")
 
@@ -91,7 +91,7 @@ export const Passenger = ({ navigation }) => {
             placeholderTextColor={COLORS.white}
             selectionColor={COLORS.white}
             keyboardType="numeric"
-            onChangeText={text => setData('+254' + '' + text)}
+            onChangeText={text => setPaymentData('254' + '' + text)}
           />
           {
             errorMsg &&
@@ -106,7 +106,6 @@ export const Passenger = ({ navigation }) => {
   }
 
   const renderButton = () => {
-    console.log("Data test", data)
     return (
       <View style={{ margin: SIZES.padding * 3 }}>
         <TouchableOpacity
@@ -130,14 +129,14 @@ export const Passenger = ({ navigation }) => {
   const handleSubmit = () => {
     setSubmit(true)
 
-    if (!data) {
+    if (!paymentData) {
       seterrorMsg("The phone number is required to proceed")
       setSubmit(false)
     }
-    if (data) {
+    if (paymentData) {
       seterrorMsg(null)
       navigation.navigate('Home',{
-        phone:data
+        phoneNumber:paymentData
       })
     }
   }

@@ -25,7 +25,7 @@ import { async } from '@firebase/util'
 export const Home = ({ navigation, route }) => {
 
   const saccos1 = () => {
-return Regions.map(x => x.saccos)[0]
+    return Regions.map(x => x.saccos)[0]
   }
 
 
@@ -33,15 +33,13 @@ return Regions.map(x => x.saccos)[0]
   const [saccoData2, setSaccos2] = useState()
   const [searchText, setSearchText] = useState("");
   const [currentSelected, setcurrentSelected] = useState([0])
- 
+  const [paymentData, setPaymentData] = useState(route.params)
+
 
 
   useEffect(() => {
-    console.log("Route info",route.params)
-    
-    
+    console.log("Payment info in state", paymentData)
 
-    
     const subscriber = firestore()
       .collection('Regions')
       .doc("ikZAfo3S0BDFDp1n70yn")
@@ -51,38 +49,31 @@ return Regions.map(x => x.saccos)[0]
 
     // Stop listening for updates when no longer required
     return () => subscriber();
-      
-      
-     // Stop listening for updates when no longer required
-    //return () => subscriber();
-
 
   }, []);
 
 
-//Render page header
-const renderHeader = () => {
+  //Render page header
+  const renderHeader = () => {
+    return (
 
-  return (
-
-    <View style={{ flex: 1, flexDirection: "row", alignItems: "center", height: 50, backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
-        <Button
-          onPress={() => alert('This is a button!')}
-          title="Back"
-          color="#010000"
-        />
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", height: 50, backgroundColor: COLORS.white }}>
+        <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
+          <Button
+            onPress={() => alert('This is a button!')}
+            title="Back"
+            color="#010000"
+          />
+        </View>
+        <View style={{ flex: 8, height: 50, justifyContent: "center" }}>
+          <Text style={{ color: COLORS.black, alignSelf: "center", fontWeight: "700", ...FONTS.h3 }}>Welcome</Text>
+        </View>
       </View>
-      <View style={{ flex: 8, height: 50, justifyContent: "center" }}>
-        <Text style={{ color: COLORS.black, alignSelf: "center", fontWeight: "700", ...FONTS.h3 }}>Welcome</Text>
-      </View>
-    </View>
-  )
-}
+    )
+  }
 
   //Render the search input field
   const renderSearch = () => {
-    console.log('Set sacco 2: ', saccoData2);
     return (
       <View
         style={{
@@ -91,36 +82,40 @@ const renderHeader = () => {
 
         }}>
         {/**Search bar */}
-        <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search sacco"/>
+        <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search sacco" />
         <View><Text style={{ color: COLORS.black }}>{searchText}</Text></View>
         {/* <View>{renderButton()}</View> */}
         <View><Text style={{ fontWeight: "700", marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h1 }}>Saccos</Text></View>
-        <FlatList horizontal={true} 
-        style={styles.flatList} 
-        data={saccoData} 
-        renderItem={({ item, index }) => {
-          return (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={{
-                alignItems: "center",
-                justifyContent: "space-evenly",
-                height: 70,
-                width: 150,
-                marginHorizontal: 10,
-                backgroundColor: currentSelected == index ? COLORS.black : COLORS.white,
-                marginVertical: 5,
-                borderRadius: 20,
-                elevation: 5
-              }}
-              onPress={() => setcurrentSelected(index)}
-            >
-              <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                <Text style={{ color: currentSelected == index ? COLORS.white : COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>
-              </View>
-            </TouchableOpacity>
-          )}} 
-        showsHorizontalScrollIndicator={false} />
+        <FlatList horizontal={true}
+          style={styles.flatList}
+          data={saccoData}
+          renderItem={({ item, index }) => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  height: 70,
+                  width: 150,
+                  marginHorizontal: 10,
+                  backgroundColor: currentSelected == index ? COLORS.black : COLORS.white,
+                  marginVertical: 5,
+                  borderRadius: 20,
+                  elevation: 5
+                }}
+                onPress={() => {setcurrentSelected(index)
+              console.log("Current selected sacco", saccoData[currentSelected].saccoName)
+                }
+              }
+              >
+                <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                  <Text style={{ color: currentSelected == index ? COLORS.white : COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>
+                </View>
+              </TouchableOpacity>
+            )
+          }}
+          showsHorizontalScrollIndicator={false} />
 
         <Text
           style={{
@@ -134,6 +129,8 @@ const renderHeader = () => {
         </Text>
         {/*Render Routes list*/}
         {saccoData[currentSelected].routes.map((data, index) => {
+          //setPaymentData({...paymentData, saccoName: saccoData[currentSelected].saccoName})
+          console.log("Current selected sacco2", saccoData[currentSelected].saccoName)
           return (
             <TouchableOpacity
               key={index}
@@ -151,7 +148,9 @@ const renderHeader = () => {
                 flexDirection: 'row',
               }}
               onPress={() => navigation.navigate("Vehicles", {
-                routeData: data
+                routeData: data,
+                paymentData: paymentData,
+                saccoName: saccoData[currentSelected].saccoName
               })}
             >
               <View style={{ flexDirection: 'row' }}>
@@ -203,7 +202,7 @@ const renderHeader = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
       <ScrollView>
-      {renderHeader()}
+        {renderHeader()}
         <View style={styles.searchBar}>
           {renderSearch()}
         </View>

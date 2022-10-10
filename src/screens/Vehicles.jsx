@@ -1,32 +1,33 @@
 import { View, Text, KeyboardAvoidingView, StyleSheet, ScrollView, Button, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { SearchBar,Header } from '../components'
+import { SearchBar, Header } from '../components'
 import { COLORS, FONTS, SIZES, icons } from '../constants';
 
-export const Vehicles = ({ navigation,route }) => {
+export const Vehicles = ({ navigation, route }) => {
 
     const [searchText, setSearchText] = useState("");
-    const { routeData } = route.params
+    const { routeData, paymentData, saccoName } = route.params
     const [vehiclesData, setVehiclesData] = useState(routeData.vehicles)
-    var refresh = 1000; // Refresh rate in milli seconds
-   
+    const [paymentData3, setPaymentData] = useState({ ...paymentData, saccoName })
+    //
 
 
     useEffect(() => {
 
-       
+        setPaymentData({ ...paymentData3, routeName: routeData.routeName })
+
 
     }, [])
 
 
-  
+
 
 
     //Render page header
     const renderHeader = () => {
         return (
 
-            <View style={{ flex: 1, flexDirection: "row", alignItems: "center",elevation:5, height: 50, backgroundColor: COLORS.black }}>
+            <View style={{ flex: 1, flexDirection: "row", alignItems: "center", elevation: 5, height: 50, backgroundColor: COLORS.black }}>
                 <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
                     <Button
                         onPress={() => alert('This is a button!')}
@@ -61,8 +62,8 @@ export const Vehicles = ({ navigation,route }) => {
                     paddingHorizontal: 15,
                     flexDirection: 'row',
                 }}
-                onPress={()=>navigation.navigate("Payment", {data:routeData, vehicle:item.vehicleRegistration})}
-                >
+                onPress={() => navigation.navigate("Payment", { data: routeData, paymentData:paymentData3, vehicle: item.vehicleRegistration })}
+            >
                 <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
                     <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{index + 1}.{item.vehicleRegistration}</Text>
                 </View>
@@ -77,12 +78,12 @@ export const Vehicles = ({ navigation,route }) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}>
             <View >
-                <View style={{ marginVertical: SIZES.padding * 3, backgroundColor:COLORS.black }}>
-                {renderHeader()}
+                <View style={{ marginVertical: SIZES.padding * 3, backgroundColor: COLORS.black }}>
+                    {renderHeader()}
                 </View>
 
-              
-                <View style={{ marginVertical: SIZES.padding * 1,marginHorizontal: SIZES.padding * 2 }}>
+
+                <View style={{ marginVertical: SIZES.padding * 1, marginHorizontal: SIZES.padding * 2 }}>
                     <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search by vehicle registration" />
                 </View>
                 <View style={{ marginHorizontal: SIZES.padding * 2 }} >

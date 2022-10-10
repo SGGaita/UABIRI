@@ -12,18 +12,20 @@ import { COLORS, SIZES, FONTS, icons } from '../constants'
 export const Payment = ({ navigation, route }) => {
 
 
-  const { data, vehicle } = route.params
+  const { data, paymentData, vehicle } = route.params
   const [schedule, setSchedule] = useState(data.scheduleCost)
   const [amount, setAmount] = useState()
+  const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
 
   //get current date
   var date = new Date()
 
   useEffect(() => {
 
-    console.log("What is data", data)
-    
-    
+    console.log("What is data at payment", paymentData1)
+
+
+
     //get the time from the date value and pass it through the 24hr converter
     var convertedTime = convertTime(date.toLocaleTimeString())
     //Filter Data passed from route.params to check which falls between specific time range and return Amount value
@@ -54,7 +56,9 @@ export const Payment = ({ navigation, route }) => {
 
   const handlePayment = () => {
 
-    navigation.navigate("Receipt")
+    // navigation.navigate("Receipt")
+    //TODO add MPESA processing and retrieve mpesa details
+
 
   }
 
@@ -69,7 +73,7 @@ export const Payment = ({ navigation, route }) => {
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center", height: 50, backgroundColor: COLORS.white }}>
         <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
           <Button
-            onPress={() =>navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Home')}
             title="Back"
             color="#010000"
           />
@@ -87,9 +91,9 @@ export const Payment = ({ navigation, route }) => {
         <Text style={{ marginTop: 10, marginBottom: 15, borderStyle: 'dotted', borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.emerald, ...FONTS.h2 }} >Payment Details</Text>
         <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Date:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{date.toLocaleDateString()}</Text></View>
         <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Time:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{date.toLocaleTimeString()}</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Sacco Name:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>Lopha Sacco</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Route :</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>Odeon - Aga Khan</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Vehicle Registration:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>Lopha Sacco</Text></View>
+        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Sacco Name:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{paymentData1.saccoName}</Text></View>
+        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Route :</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{paymentData1.routeName}</Text></View>
+        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Vehicle Registration:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{paymentData1.vehicleRegistration}</Text></View>
         <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Fare Amount:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{amount}</Text></View>
       </View>
     )
