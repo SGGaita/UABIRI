@@ -8,6 +8,7 @@ import {
   ScrollView
 } from 'react-native'
 import { COLORS, SIZES, FONTS, icons } from '../constants'
+import firestore from '@react-native-firebase/firestore';
 
 export const Payment = ({ navigation, route }) => {
 
@@ -51,6 +52,16 @@ export const Payment = ({ navigation, route }) => {
     return `${hours}:${minutes}`;
   };
 
+  const transactionCode = ()=>{
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ";
+        var string_length = 10;
+        var randomstring = '';
+        for (var i = 0; i < string_length; i++) {
+            var rnum = Math.floor(Math.random() * chars.length);
+            randomstring += chars[rnum];
+        }
+        return randomstring;
+  }
 
 
 
@@ -58,7 +69,21 @@ export const Payment = ({ navigation, route }) => {
 
     // navigation.navigate("Receipt")
     //TODO add MPESA processing and retrieve mpesa details
+    firestore()
+    .collection('Transactions')
+    .add({
+      transactionCode: transactionCode(),
+      phoneNumber: paymentData1.phoneNumber,
+      vehicleRegistration: paymentData1.vehicleRegistration,
+      routeName: paymentData1.routeName,
+      saccoName: paymentData1.saccoName,
+      amount: amount,
+      date: new Date()
 
+    })
+    .then(() => {
+      console.log('Transaction completed successfully!');
+    });
 
   }
 
