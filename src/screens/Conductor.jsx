@@ -14,21 +14,43 @@ import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/Key
 import { SearchBar } from '../components'
 import { COLORS, SIZES, FONTS, icons, images } from '../constants'
 import { transactions } from '../dummy/data'
+import firestore from '@react-native-firebase/firestore';
 
 
 
 
 export const Conductor = ({ route, navigation }) => {
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState()
   const [searchText, setSearchText] = useState("");
-  //const [alias,pnumber] = route.params
+  const [transaction, setTransaction] = useState()
 
 
 
   useEffect(() => {
-    setData(transactions)
-    console.log("Data", transactions)
+    const subscriber = firestore()
+      .collection('Transactions')
+      .onSnapshot(querySnapshot => {
+        // see next step
+        const transact = [];
+
+        querySnapshot.forEach(documentSnapshot => {
+          transact.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        console.log("transact", transact)
+
+        setTransaction(transact);
+      //setLoading(false);
+  
+      });
+
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+
   }, []);
 
 
@@ -59,7 +81,7 @@ export const Conductor = ({ route, navigation }) => {
         <SearchBar searchText={searchText} setSearchText={setSearchText} />
         <View>{renderButton()}</View>
         <View><Text style={{ marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h2 }}>Latest transactions</Text></View>
-        <FlatList style={styles.flatList} data={data} renderItem={renderTransactions} keyExtractor={item => item.id} />
+        <FlatList style={styles.flatList} data={transaction} renderItem={renderTransactions}  />
 
       </View>
     )
@@ -71,6 +93,7 @@ export const Conductor = ({ route, navigation }) => {
       <TouchableOpacity style={{ paddingVertical: 20, backgroundColor: COLORS.white, marginVertical: 5, shadowColor: COLORS.lightGray, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.2, shadowRadius: 3.5, elevation: 5 }}
         onPress={() => navigation.navigate("Payment")}
       >
+        
         <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
           <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
             Transaction Code:
@@ -90,12 +113,12 @@ export const Conductor = ({ route, navigation }) => {
           </Text>
           <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.amount}</Text>
         </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
+        {/* <View style={{ flexDirection: "row", paddingHorizontal: 30, marginTop: 16 }}>
           <Text style={{ color: COLORS.black, ...FONTS.h2, paddingRight: 20 }}>
             Date:
           </Text>
           <Text style={{ color: COLORS.gray, ...FONTS.body2 }}>{item.date}</Text>
-        </View>
+        </View>  */}
       </TouchableOpacity>
 
     )

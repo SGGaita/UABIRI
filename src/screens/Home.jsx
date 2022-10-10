@@ -16,7 +16,7 @@ import { COLORS, SIZES, FONTS, icons, images } from '../constants'
 import { SearchBar } from '../components/index'
 import { Regions } from '../dummy/data'
 import firestore from '@react-native-firebase/firestore';
-import { async } from '@firebase/util'
+
 
 
 
