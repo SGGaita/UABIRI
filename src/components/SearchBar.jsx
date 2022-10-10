@@ -15,7 +15,7 @@ export const SearchBar = (props) => {
             color: COLORS.black,
             ...FONTS.body3
           }}
-            placeholder="Search"
+            placeholder={props.placeholder}
             placeholderTextColor={COLORS.secondary}
 
             selectionColor={COLORS.black}

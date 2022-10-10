@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     StyleSheet, Text, View, Dimensions, Image, ImageBackground, TouchableOpacity, ScrollView
 } from 'react-native'
@@ -7,6 +7,11 @@ import LinearGradient from 'react-native-linear-gradient'
 import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 
 export const Onboarding = ({ navigation }) => {
+
+    useEffect(() => {
+      
+    }, [])
+
 
     const renderHeader = () => {
         return (

@@ -7,43 +7,82 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  FlatList
+  FlatList,
+  Button
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
 import { COLORS, SIZES, FONTS, icons, images } from '../constants'
 import { SearchBar } from '../components/index'
 import { Regions } from '../dummy/data'
-import { doc, onSnapshot } from "firebase/firestore";
-import { db, storage } from "../../config";
+import firestore from '@react-native-firebase/firestore';
+import { async } from '@firebase/util'
 
 
 
 
 
-export const Home = ({navigation, route }) => {
+export const Home = ({ navigation, route }) => {
 
-  const saccos = () => {
-
-    return Regions.map(x => x.saccos)[0]
+  const saccos1 = () => {
+return Regions.map(x => x.saccos)[0]
   }
 
-  const [saccoData, setSaccos] = useState(saccos())
+
+  const [saccoData, setSaccos] = useState(saccos1())
+  const [saccoData2, setSaccos2] = useState()
   const [searchText, setSearchText] = useState("");
   const [currentSelected, setcurrentSelected] = useState([0])
  
 
+
   useEffect(() => {
-    console.log(route.params)
-    //console.log("Flat Data ", saccoData)
+    console.log("Route info",route.params)
+    
+    
+
+    
+    const subscriber = firestore()
+      .collection('Regions')
+      .doc("ikZAfo3S0BDFDp1n70yn")
+      .onSnapshot(documentSnapshot => {
+        setSaccos(documentSnapshot.data().saccos);
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+      
+      
+     // Stop listening for updates when no longer required
+    //return () => subscriber();
+
 
   }, []);
 
 
+//Render page header
+const renderHeader = () => {
 
+  return (
+
+    <View style={{ flex: 1, flexDirection: "row", alignItems: "center", height: 50, backgroundColor: COLORS.white }}>
+      <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
+        <Button
+          onPress={() => alert('This is a button!')}
+          title="Back"
+          color="#010000"
+        />
+      </View>
+      <View style={{ flex: 8, height: 50, justifyContent: "center" }}>
+        <Text style={{ color: COLORS.black, alignSelf: "center", fontWeight: "700", ...FONTS.h3 }}>Welcome</Text>
+      </View>
+    </View>
+  )
+}
 
   //Render the search input field
   const renderSearch = () => {
+    console.log('Set sacco 2: ', saccoData2);
     return (
       <View
         style={{
@@ -52,12 +91,37 @@ export const Home = ({navigation, route }) => {
 
         }}>
         {/**Search bar */}
-        <SearchBar searchText={searchText} setSearchText={setSearchText} />
+        <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search sacco"/>
         <View><Text style={{ color: COLORS.black }}>{searchText}</Text></View>
         {/* <View>{renderButton()}</View> */}
         <View><Text style={{ fontWeight: "700", marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h1 }}>Saccos</Text></View>
-        <FlatList horizontal={true} style={styles.flatList} data={saccoData} renderItem={renderSaccos} showsHorizontalScrollIndicator={false} />
-        
+        <FlatList horizontal={true} 
+        style={styles.flatList} 
+        data={saccoData} 
+        renderItem={({ item, index }) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                height: 70,
+                width: 150,
+                marginHorizontal: 10,
+                backgroundColor: currentSelected == index ? COLORS.black : COLORS.white,
+                marginVertical: 5,
+                borderRadius: 20,
+                elevation: 5
+              }}
+              onPress={() => setcurrentSelected(index)}
+            >
+              <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                <Text style={{ color: currentSelected == index ? COLORS.white : COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>
+              </View>
+            </TouchableOpacity>
+          )}} 
+        showsHorizontalScrollIndicator={false} />
+
         <Text
           style={{
             paddingTop: 20,
@@ -86,8 +150,8 @@ export const Home = ({navigation, route }) => {
                 paddingHorizontal: 15,
                 flexDirection: 'row',
               }}
-              onPress={()=> navigation.navigate("Payment", {
-                routeID: data
+              onPress={() => navigation.navigate("Vehicles", {
+                routeData: data
               })}
             >
               <View style={{ flexDirection: 'row' }}>
@@ -111,31 +175,6 @@ export const Home = ({navigation, route }) => {
   }
 
 
-
-  //render saccos list
-  const renderSaccos = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={{
-          alignItems: "center",
-          justifyContent: "space-evenly",
-          height: 70,
-          width: 150,
-          marginHorizontal: 10,
-          backgroundColor: currentSelected == index ? COLORS.yellow : COLORS.white,
-          marginVertical: 5,
-          borderRadius: 20,
-          elevation: 5
-        }}
-        onPress={() => setcurrentSelected(index)}
-      >
-        <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-          <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
 
   //render button 
   // const renderButton = () => {
@@ -164,6 +203,7 @@ export const Home = ({navigation, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}>
       <ScrollView>
+      {renderHeader()}
         <View style={styles.searchBar}>
           {renderSearch()}
         </View>
@@ -178,22 +218,6 @@ export const Home = ({navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  linearGradient: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start'
-  },
-
-  searchBar: {
-    flex: 2
-  },
-
-  flatList: {
-
-
-
   }
 })
 

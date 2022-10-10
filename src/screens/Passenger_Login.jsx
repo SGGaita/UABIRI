@@ -9,43 +9,33 @@ import {
   TextInput,
   Modal,
   FlatList,
+  Button,
   KeyboardAvoidingView,
   ScrollView
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
+
 import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 import { Home, Onboarding } from '../screens'
 
 export const Passenger = ({ navigation }) => {
-  const [name, setName] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
+  const [data, setData] = useState(null)
+  const [isSubmitting, setSubmit] = useState(false)
+  const [errorMsg, seterrorMsg] = useState("")
+
 
   const renderHeader = () => {
     return (
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: SIZES.padding * 4,
-          paddingHorizontal: SIZES.padding * 2
-        }}
-        onPress={() => {
-          navigation.navigate("Onboarding")
-        }}>
-
-        <Image
-          source={icons.back}
-          resizeMode="contain"
-          style={{
-            width: 20,
-            height: 20,
-            tintColor: COLORS.white
-          }}
-        />
-        <Text style={{ marginLeft: SIZES.padding * 1.5, color: COLORS.white, ...FONTS.h4 }}
-        >Passenger Onboarding</Text>
-      </TouchableOpacity>
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", elevation: 5, height: 50, backgroundColor: COLORS.black }}>
+        <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
+          <Button
+            onPress={() => alert('This is a button!')}
+            title="Back"
+            color="#010000"
+          />
+        </View>
+      </View>
     )
   }
 
@@ -80,26 +70,6 @@ export const Passenger = ({ navigation }) => {
           marginTop: SIZES.padding * 3,
           marginHorizontal: SIZES.padding * 3,
         }}>
-        {/**Alias */}
-        <View style={{ marginTop: SIZES.padding * 3 }}>
-          <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>
-            Alias/Name
-          </Text>
-          <TextInput style={{
-            marginVertical: SIZES.padding,
-            borderBottomColor: COLORS.white,
-            borderBottomWidth: 1,
-            height: 40,
-            color: COLORS.white,
-            ...FONTS.body3
-          }}
-            placeholder="Enter your Alias or Full name"
-            placeholderTextColor={COLORS.white}
-            selectionColor={COLORS.white}
-            value={name}
-            onChangeText={text=>setName(text)}
-          />
-        </View>
 
         {/**Phone number */}
         <View style={{ marginTop: SIZES.padding * 2 }}>
@@ -107,66 +77,28 @@ export const Passenger = ({ navigation }) => {
             Phone number
           </Text>
 
-          <View style={{ flexDirection: 'row' }}>
-            {/*Country Code*/}
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 50,
-                marginHorizontal: 5,
-                borderBottomColor: COLORS.white,
-                borderBottomWidth: 1,
-                flexDirection: 'row',
-                ...FONTS.body2
-              }}
-              onPress={() => console.log("Show modal")}
-            >
-              <View style={{ justifyContent: 'center' }}>
-                <Image source={icons.down}
-                  style={{
-                    width: 10,
-                    height: 10,
-                    tintColor: COLORS.white
-                  }}
-                />
-              </View>
-              <View style={{ justifyContent: 'center', marginLeft: 5 }}>
-                <Image
-                  source={images.keFlag}
-                  resizeMode="contain"
-                  style={{
-                    width: 30,
-                    height: 30,
-                  }}
-                />
-              </View>
-              <View style={{ justifyContent: 'center', marginLeft: 5 }}>
-                <Text style={{ color: COLORS.white, ...FONTS.body3 }}>
-                  {/*TODO retrieve countries */}
-                  KE+254
-                </Text>
-              </View>
-            </TouchableOpacity>
+          <TextInput
+            style={{
+              flex: 1,
+              marginVertical: SIZES.padding,
+              borderBottomColor: COLORS.white,
+              borderBottomWidth: 1,
+              height: 40,
+              color: COLORS.white,
+              ...FONTS.body3
+            }}
+            placeholder="Enter your Phone number"
+            placeholderTextColor={COLORS.white}
+            selectionColor={COLORS.white}
+            keyboardType="numeric"
+            onChangeText={text => setData('+254' + '' + text)}
+          />
+          {
+            errorMsg &&
+            <Text style={{ color: COLORS.red }}>*{errorMsg}</Text>
+          }
+          
 
-            {/*Phone number*/}
-            <TextInput
-              style={{
-                flex: 1,
-                marginVertical: SIZES.padding,
-                borderBottomColor: COLORS.white,
-                borderBottomWidth: 1,
-                height: 40,
-                color: COLORS.white,
-                ...FONTS.body3
-              }}
-              placeholder="Enter your Phone number"
-              placeholderTextColor={COLORS.white}
-              selectionColor={COLORS.white}
-              keyboardType="numeric"
-              onChangeText={text=>setPhoneNumber('+254'+''+text)}
-            />
-
-          </View>
         </View>
       </View>
 
@@ -174,6 +106,7 @@ export const Passenger = ({ navigation }) => {
   }
 
   const renderButton = () => {
+    console.log("Data test", data)
     return (
       <View style={{ margin: SIZES.padding * 3 }}>
         <TouchableOpacity
@@ -184,18 +117,29 @@ export const Passenger = ({ navigation }) => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onPress={() => 
-            //console.log(name)
-             navigation.navigate("Home",{
-               name: 89,
-               phoneNumber: 90
-             })
-            }
+          onPress={handleSubmit}
+          disabled = {isSubmitting}
         >
           <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
         </TouchableOpacity>
       </View>
     )
+  }
+
+  //Handle submit
+  const handleSubmit = () => {
+    setSubmit(true)
+
+    if (!data) {
+      seterrorMsg("The phone number is required to proceed")
+      setSubmit(false)
+    }
+    if (data) {
+      seterrorMsg(null)
+      navigation.navigate('Home',{
+        phone:data
+      })
+    }
   }
 
   return (

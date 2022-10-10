@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "629811020114",
+    "project_id": "u-abiri",
+    "storage_bucket": "u-abiri.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629811020114:android:1028a191410d39a4d87a8b",
+        "android_client_info": {
+          "package_name": "com.uabiri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629811020114-5cmcambdi7k4n1qp8r5nc9t1rk5ac47h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbJz9ZhQoYeO1YO1SBWW-2H0bznOayvDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629811020114-5cmcambdi7k4n1qp8r5nc9t1rk5ac47h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
