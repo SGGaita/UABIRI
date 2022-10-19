@@ -104,10 +104,11 @@ export const Home = ({ navigation, route }) => {
                   borderRadius: 20,
                   elevation: 5
                 }}
-                onPress={() => {setcurrentSelected(index)
-              console.log("Current selected sacco", saccoData[currentSelected].saccoName)
+                onPress={() => {
+                  setcurrentSelected(index)
+                  console.log("Current selected sacco", saccoData[currentSelected].saccoName)
                 }
-              }
+                }
               >
                 <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
                   <Text style={{ color: currentSelected == index ? COLORS.white : COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{item.saccoName}</Text>

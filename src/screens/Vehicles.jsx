@@ -44,31 +44,64 @@ export const Vehicles = ({ navigation, route }) => {
 
     //render vehicles
     const renderVehicles = ({ item, index }) => {
-        console.log("Vehicles 1", Array(routeData.vehicles))
+        if (searchText === "") {
+            return (
+                <TouchableOpacity
 
-        return (
-            <TouchableOpacity
+                    style={{
+                        width: '100%',
+                        height: 100,
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginVertical: 10,
+                        backgroundColor: COLORS.white,
+                        borderRadius: 20,
+                        elevation: 4,
+                        position: "relative",
+                        paddingHorizontal: 15,
+                        flexDirection: 'row',
+                    }}
+                    onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
+                >
+                    <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                        <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{index + 1}.{item.vehicleRegistration}</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
 
-                style={{
-                    width: '100%',
-                    height: 100,
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginVertical: 10,
-                    backgroundColor: COLORS.white,
-                    borderRadius: 20,
-                    elevation: 4,
-                    position: "relative",
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                }}
-                onPress={() => navigation.navigate("Payment", { data: routeData, paymentData:paymentData3, vehicle: item.vehicleRegistration })}
-            >
-                <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                    <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{index + 1}.{item.vehicleRegistration}</Text>
-                </View>
-            </TouchableOpacity>
-        )
+        if (item.vehicleRegistration.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
+            return (
+                <TouchableOpacity
+
+                    style={{
+                        width: '100%',
+                        height: 100,
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginVertical: 10,
+                        backgroundColor: COLORS.white,
+                        borderRadius: 20,
+                        elevation: 4,
+                        position: "relative",
+                        paddingHorizontal: 15,
+                        flexDirection: 'row',
+                    }}
+                    onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
+                >
+                    <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                        <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{index + 1}.{item.vehicleRegistration}</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+
+        // if (item.vehicleRegistration.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
+        // if(item.length === 0){
+        //     return <View><Text style={{color:COLORS.black}}>No record was found</Text></View>
+        //   }
+        // }
+
 
     }
 
