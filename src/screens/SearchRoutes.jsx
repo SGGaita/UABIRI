@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  ScrollView,
   FlatList
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'

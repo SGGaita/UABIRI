@@ -26,7 +26,7 @@ export const COLORS = {
 
     lightGray: "#FCFBFC",
     gray: "#C1C3C5",
-    darkgray: "#C3C6C7",
+    darkgray: "#666666",
 
     lightblue:"#4cb6b6",
     teal:"#009797",

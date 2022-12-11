@@ -1,11 +1,14 @@
 const back = require("../assets/icons/back.png");
 const bell = require("../assets/icons/bell.png");
 const bill = require("../assets/icons/bill.png");
+const check = require("../assets/icons/check.png")
 const close = require("../assets/icons/close.png");
 const disable_eye = require("../assets/icons/disable_eye.png");
 const down = require("../assets/icons/down.png");
 const eye = require("../assets/icons/eye.png")
+const forward = require("../assets/icons/forward.png")
 const game = require("../assets/icons/games.png");
+const home = require("../assets/icons/home.png");
 const barcode = require("../assets/icons/barcode.png");
 const info = require("../assets/icons/info.png");
 const internet = require("../assets/icons/internet.png");
@@ -17,18 +20,23 @@ const send = require("../assets/icons/send.png");
 const user = require("../assets/icons/user.png");
 const wallet = require("../assets/icons/wallet.png");
 const search = require("../assets/icons/search.png");
-const home = require("../assets/icons/home.png");
-const forward = require("../assets/icons/forward.png")
+const headphones = require("../assets/icons/headphones.png")
+const logout = require("../assets/icons/logout.png")
+const file = require("../assets/icons/file.png")
+
 
 export default {
     back,
     bell,
     bill,
+    check,
     close,
     disable_eye,
     down,
     eye,
+    forward,
     game,
+    home,
     barcode,
     info,
     internet,
@@ -39,7 +47,8 @@ export default {
     send,
     user,
     wallet,
-    home,
     search,
-    forward
+    headphones,
+    logout,
+    file
 }

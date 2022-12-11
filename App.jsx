@@ -2,10 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from "@react-navigation-stack";
 import { NavigationContainer } from '@react-navigation/native';
 import { View, Text } from 'react-native'
-import { Login, Vehicles, Payment, Receipt, Passenger, Home, Conductor, Onboarding,SearchRoutes } from './src/screens/index'
+import {
+  OnboardingScreen,
+  Login,
+  Vehicles,
+  Payment,
+  Receipt,
+  Passenger,
+  Home,
+  Conductor,
+  ProfileScreen,
+  SearchRoutes,
+  VehicleOwner,
+  RouteScreen,
+  InformationScreen,
+  ResetScreen
+} from './src/screens/index'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Tabs from './src/navigation/tabs'
 import SplashScreen from 'react-native-splash-screen'
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,9 +28,19 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [count, setCount] = useState(0)
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null)
 
   useEffect(() => {
     SplashScreen.hide();
+
+    AsyncStorage.getItem('alreadyLaunched').then(value => {
+      if (value == null) {
+        AsyncStorage.setItem('alreadyLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false)
+      }
+    })
 
     setIsLoading(true)
     setCount(count + 1)
@@ -27,24 +52,57 @@ const App = () => {
   }, [])
 
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false
-        }} initialRouteName="Onboarding">
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-        <Stack.Screen name="Passenger" component={Passenger} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="SearchRoutes" component={SearchRoutes}/>
-        <Stack.Screen name="Vehicles" component={Vehicles}/>
-        <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
-        <Stack.Screen name="Receipt" component={Receipt}></Stack.Screen>
-        <Stack.Screen name="Conductor" component={Conductor}></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  if (isFirstLaunch == null) {
+    return null;
+  } else if (isFirstLaunch == true) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }} initialRouteName="OnboardingScreen">
+          <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Passenger" component={Passenger} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="SearchRoutes" component={SearchRoutes} />
+          <Stack.Screen name="Vehicles" component={Vehicles} />
+          <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="Receipt" component={Receipt} />
+          <Stack.Screen name="Conductor" component={Conductor} />
+          <Stack.Screen name="Owner" component={VehicleOwner} />
+          <Stack.Screen name="Information" component={InformationScreen} />
+          <Stack.Screen name="ResetScreen" component={ResetScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    )
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }} initialRouteName="Profile">
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Passenger" component={Passenger} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="RouteScreen" component={RouteScreen} />
+          <Stack.Screen name="Vehicles" component={Vehicles} />
+          <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="Receipt" component={Receipt} />
+          <Stack.Screen name="Conductor" component={Conductor} />
+          <Stack.Screen name="Owner" component={VehicleOwner} />
+          <Stack.Screen name="Information" component={InformationScreen} />
+          <Stack.Screen name="ResetScreen" component={ResetScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    )
+  }
+
+
+
 }
 
 export default App;
