@@ -1,4 +1,5 @@
 import react, { useState, useEffect } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import {
   View,
@@ -23,16 +24,33 @@ export const Login = ({ navigation }) => {
 
   //Text input states
   const [vehicleReg, setVehicleReg] = useState("")
+  const [errorMsg, seterrorMsg] = useState("")
+  const [isSubmitting, setSubmit] = useState(false)
  
 
 
 
-  //Login 
-  const handleLogin = () => {
-    
-    navigation.navigate('Conductor')
+//Handle submit
+const handleLogin= async() => {
+  setSubmit(true)
+  if (!vehicleReg) {
+    seterrorMsg("The Vehicle number is required to proceed")
+    setSubmit(false)
+  }
+  if (vehicleReg) {
+    seterrorMsg(null)
 
-  };
+    try {
+      await AsyncStorage.setItem(
+        'vehicleData',
+        vehicleReg
+      );
+    } catch (error) {
+      console.log('There has been an error setting item to asyncstorage')
+    }
+    navigation.navigate('Conductor')
+  }
+}
 
   const renderHeader = () => {
     return (
@@ -101,6 +119,12 @@ export const Login = ({ navigation }) => {
           <Text style={{ color: COLORS.blue, ...FONTS.body3 }}>
             Enter vehicle registration
           </Text>
+
+          {
+            errorMsg &&
+            <Text style={{ color: COLORS.red }}>*{errorMsg}</Text>
+          }
+
           <TextInput style={{
             marginVertical: SIZES.padding,
             borderBottomColor: COLORS.blue,
@@ -174,6 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    
 },
 
  

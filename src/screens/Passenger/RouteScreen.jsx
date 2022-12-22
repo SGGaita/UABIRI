@@ -99,6 +99,7 @@ export const RouteScreen = ({ navigation, route }) => {
                   }}
                   onPress={() => navigation.navigate("Vehicles", {
                     routeData: item,
+                    saccoName: saccoName
                   })}
                 >
                   <View style={{ flexDirection: 'row' }}>
@@ -134,6 +135,7 @@ export const RouteScreen = ({ navigation, route }) => {
                   }}
                   onPress={() => navigation.navigate("Vehicles", {
                     routeData: item,
+                    saccoName: saccoName
                   })}
                 >
                   <View style={{ flexDirection: 'row' }}>

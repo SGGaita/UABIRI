@@ -15,13 +15,15 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 
 
+
 export const Payment = ({ navigation, route }) => {
 
 
-  const { data, paymentData, vehicle } = route.params
+  const { data, saccoName, paymentData, vehicle } = route.params
   const [schedule, setSchedule] = useState(data.scheduleCost)
   const [amount, setAmount] = useState()
   const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
+  const [phoneN, setPhoneNumber] = useState(null)
 
   //get current date
   var date = new Date()
@@ -33,9 +35,27 @@ export const Payment = ({ navigation, route }) => {
     var filterAmount = schedule.filter(e => e.startTime < convertedTime && convertedTime < e.endTime).map(x => x.amount).toString()
     setAmount(filterAmount)
 
+//Get phone number
+getPhoneNumber();
 
+console.log("Set phone number", {phoneN})
+
+console.log("Sacco name payment", saccoName)
 
   }, [])
+
+   //fetch phone from asyncstorage
+   const getPhoneNumber = async () => {
+    try {
+      const phoneNumber = await AsyncStorage.getItem('userData')
+      setPhoneNumber(phoneNumber)
+      console.log("Phone",phoneNumber)
+    }
+    catch (error) {
+      console.log('error', error)
+    }
+  }
+
 
 
 
@@ -55,12 +75,12 @@ export const Payment = ({ navigation, route }) => {
 
 
   const handlePayment = async () => {
-
+console.log("Phone number", {phoneN})
     // navigation.navigate("Receipt")
-    await fetch(`https://5878-41-215-57-230.ngrok.io/lnmp/lipa-na-mpesa`, {
+    await fetch(`https://uabiri-mpesa-api.onrender.com/stk-push`, {
       method: 'POST',
       body: JSON.stringify({
-        "phoneNumber": `${paymentData1.phoneNumber}`,
+        "phoneNumber": `${phoneN}`,
         "saccoName": `${paymentData1.saccoName}`,
         "routeName": `${paymentData1.routeName}`,
         "vehicleRegistration": `${paymentData1.vehicleRegistration}`,
@@ -176,7 +196,7 @@ export const Payment = ({ navigation, route }) => {
           <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
         </TouchableOpacity>
         </LinearGradient>
-        <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt. Kindly enter your M-Pesa pin to complete the transaction.</Text>
+        <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt to phone number {phoneN}. Kindly enter your M-Pesa pin to complete the transaction.</Text>
       </View>
     )
   }

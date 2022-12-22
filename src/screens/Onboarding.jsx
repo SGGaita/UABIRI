@@ -10,8 +10,8 @@ export const OnboardingScreen = ({ navigation }) => {
 
     return (
         <Onboarding
-            onSkip={() => navigation.replace('ProfileScreen')}
-            onDone={() => navigation.navigate('ProfileScreen')}
+            onSkip={() => navigation.replace('Profile')}
+            onDone={() => navigation.navigate('Profile')}
 
             pages={[
                 {

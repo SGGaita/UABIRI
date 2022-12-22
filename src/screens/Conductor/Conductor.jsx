@@ -21,7 +21,25 @@ import * as Animatable from 'react-native-animatable';
 
 export const Conductor = ({ route, navigation }) => {
 
+  const [vehicleReg, setVehicleReg] = useState(null)
 
+  useEffect(()=>{
+
+    getVehicleReg()
+
+  },[vehicleReg])
+
+ //fetch vehicle reg from asyncstorage
+ const getVehicleReg = async () => {
+  try {
+    const vehicleRegistration = await AsyncStorage.getItem('vehicleData')
+    setVehicleReg(vehicleRegistration)
+    
+  }
+  catch (error) {
+    console.log('error', error)
+  }
+}
 
   //Render page header
   const renderHeader = () => {
@@ -42,26 +60,13 @@ export const Conductor = ({ route, navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={{ flex: 1, right: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Information')}
-            >
-              <Image
-                source={icons.headphones}
-                resizeMode="contain"
-                style={{
-                  width: 20,
-                  tintColor: COLORS.white,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
+         
         </View>
 
         <View style={{ flex: 2, left: 10 }}>
 
           <Timer />
-          <Animatable.Text animation="fadeInLeft" style={{ fontWeight: '700', ...FONTS.h1, color: COLORS.white }}>Hello:</Animatable.Text>
+          <Animatable.Text animation="fadeInLeft" style={{ fontWeight: '700', ...FONTS.h1, color: COLORS.white }}>Hello: {vehicleReg}</Animatable.Text>
         </View>
       </View>
     )
