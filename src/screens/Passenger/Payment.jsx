@@ -93,9 +93,17 @@ console.log("Phone number", {phoneN})
 
     })
       .then((resp) => {
-        console.log('response', resp)
-      })
-      .catch((err) => {
+        console.log('response now', resp)
+        if(!resp.ok){
+          console.log("this failed")
+        }else{
+        navigation.navigate('Receipt')
+      }
+      }).then((data) =>{
+        console.log("actualdata", data)
+      }
+
+      ).catch((err) => {
         console.log('Error', err)
       })
 

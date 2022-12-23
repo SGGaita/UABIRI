@@ -137,7 +137,7 @@ const handleLogin= async() => {
             placeholder="Vehicle registration"
             placeholderTextColor={COLORS.gray}
             selectionColor={COLORS.black}
-            onChangeText={text => setVehicleReg(text)}
+            onChangeText={text => setVehicleReg(text.toUpperCase())}
           />
         </View>
       </View>

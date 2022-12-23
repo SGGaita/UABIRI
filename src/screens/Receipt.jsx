@@ -1,91 +1,113 @@
-import react,{useState} from 'react'
+import react,{useState, useEffect} from 'react'
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
+  ImageBackground
 } from 'react-native'
-import { COLORS, SIZES, FONTS,fontWeights, icons } from '../constants'
+import { COLORS, SIZES, FONTS,images, icons } from '../constants'
+import { Timer } from '../components'
+import AsyncStorage from '@react-native-community/async-storage'
+import * as Animatable from 'react-native-animatable';
+import LinearGradient from 'react-native-linear-gradient';
 
 export const Receipt = ({navigation}) => {
 
+  //fetch phone from asyncstorage
+  const getPhoneNumber = async () => {
+    try {
+      const phoneNumber = await AsyncStorage.getItem('userData')
+      setPhoneNumber(phoneNumber)
+    }
+    catch (error) {
+      console.log('error', error)
+    }
+  }
+
   const [date,setDate] = useState(new Date())
+  const [phoneN, setPhoneNumber] = useState(null)
+  
+  useEffect(() => {
+    getPhoneNumber()
+    getReceiptDetails(phoneN)
+    
+  }, []);
 
-  const handlePayment = () => {
 
-    navigation.navigate("Receipt")
-
+  //fetch and filter transactions
+  const getReceiptDetails = (phone) =>{
+console.log("This is phone number", phone)
   }
 
 
   const renderHeader = () => {
     return (
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: SIZES.padding * 4,
-          paddingHorizontal: SIZES.padding * 2
-        }}
-        onPress={() => {
-          navigation.navigate("Onboarding")
-          console.log("Navigate")
-        }}>
-        <Image
-          source={icons.back}
-          resizeMode="contain"
-          style={{
-            width: 20,
-            height: 20,
-            tintColor: COLORS.black
-          }}
-        />
-        <Text style={{ marginLeft: SIZES.padding * 1.5, color: COLORS.black, ...FONTS.h4 }}
-        >Back</Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ flex: 1, left: 10, justifyContent: 'center' }}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <Image
+                source={icons.back}
+                resizeMode="contain"
+                style={{
+                  width: 20,
+                  tintColor: COLORS.white,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, right: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Information')}
+            >
+              <Image
+                source={icons.headphones}
+                resizeMode="contain"
+                style={{
+                  width: 20,
+                  tintColor: COLORS.white,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={{ flex: 2, left: 10 }}>
+
+          <Timer />
+          <Animatable.Text animation="fadeInLeft" style={{ fontWeight: '700', ...FONTS.h1, color: COLORS.white }}>Payment Details{phoneN}</Animatable.Text>
+        </View>
+       </View>
     )
   }
 
   const renderBody = () => {
     return (
-      <View style={{ marginHorizontal: 20 }}>
-        <Text style={{ marginVertical: 10, color: COLORS.black, alignSelf: 'center', ...FONTS.h1 }} >Receipt</Text>
-        <Text style={{ marginTop: 10, marginBottom: 15, alignSelf: 'center', color: COLORS.emerald, ...FONTS.h2 }} >Thank you for making payment</Text>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Date:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>{date.toLocaleString()}</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Sent To: </Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>UAbiri</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Transaction No:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>QFF25KMAPC</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Payment Type:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>M-PESA Send Money</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>PayBill:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>123456</Text></View>
-        <View style={{ flexDirection: 'row', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.body2 }}>Amount:</Text><Text style={{ color: COLORS.black, ...FONTS.h2 }}>50</Text></View>
+      <View >
+
       </View>
     )
   }
 
   const renderButton = () => {
     return (
-      <View style={{ marginHorizontal: SIZES.padding * 1, marginTop: SIZES.padding * 4 }}>
-        <TouchableOpacity
-          style={{
-            height: 60,
-            backgroundColor: COLORS.black,
-            borderRadius: SIZES.radius / 1.5,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onPress={handlePayment}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Download Receipt</Text>
-        </TouchableOpacity>
+      <View>
       </View>
     )
   }
 
   return (
     <View style={styles.container}>
+      <ImageBackground style={{ flex: 1, backgroundColor: COLORS.blue }} source={images.nairobi}>
       {renderHeader()}
-      {renderBody()}
-      {renderButton()}
+      <Animatable.View animation="fadeInUpBig" style={styles.body}>
+          {renderBody()}
+        </Animatable.View>
+        </ImageBackground>
     </View>
   )
 }
@@ -93,6 +115,20 @@ export const Receipt = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+
+  header: {
+    flex: 1,
+    flexDirection: "column",
+   
+  },
+
+  body: {
+    flex: 4,
+    backgroundColor: COLORS.white,
+    justifyContent: "flex-start",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   }
 })
 

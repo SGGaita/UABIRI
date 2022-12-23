@@ -60,7 +60,7 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false
-          }} initialRouteName="OnboardingScreen">
+          }} initialRouteName="Profile">
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Passenger" component={Passenger} />
@@ -83,7 +83,7 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false
-          }} initialRouteName="Conductor">
+          }} initialRouteName="Profile">
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Passenger" component={Passenger} />
           <Stack.Screen name="Login" component={Login} />
