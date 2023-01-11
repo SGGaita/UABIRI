@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  ScrollView
+  ActivityIndicator
 } from 'react-native'
-import {Timer} from '../../components'
+import { Timer } from '../../components'
 import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
 import AsyncStorage from '@react-native-community/async-storage'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
+import firestore from '@react-native-firebase/firestore';
 
 
 
@@ -24,6 +25,10 @@ export const Payment = ({ navigation, route }) => {
   const [amount, setAmount] = useState()
   const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
   const [phoneN, setPhoneNumber] = useState(null)
+  const [show, setShow] = useState(false)
+  const [showConfirm, setSHowConfirm] = useState(false)
+  const [status, setStatus] = useState({})
+
 
   //get current date
   var date = new Date()
@@ -35,21 +40,32 @@ export const Payment = ({ navigation, route }) => {
     var filterAmount = schedule.filter(e => e.startTime < convertedTime && convertedTime < e.endTime).map(x => x.amount).toString()
     setAmount(filterAmount)
 
-//Get phone number
-getPhoneNumber();
+    //Get phone number
+    getPhoneNumber();
 
-console.log("Set phone number", {phoneN})
+    // Get a reference to the "Transactions" collection
+    var transactionsRef = firestore().collection('Transactions');
 
-console.log("Sacco name payment", saccoName)
+    // Listen for the last item added to the "transactions" collection
+    transactionsRef.orderBy('timestamp', 'desc').limit(1).onSnapshot((snapshot) => {
+      setStatus(snapshot.docs.map((doc) => ({
+        data: doc.data().MerchantRequestID
+        //console.log('The last item added was:', item);
+    })));
+
+    navigation.navigate('Receipt')
+    });
+    console.log("Test",status)
 
   }, [])
 
-   //fetch phone from asyncstorage
-   const getPhoneNumber = async () => {
+  console.log(status)
+
+  //fetch phone from asyncstorage
+  const getPhoneNumber = async () => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
       setPhoneNumber(phoneNumber)
-      console.log("Phone",phoneNumber)
     }
     catch (error) {
       console.log('error', error)
@@ -75,7 +91,10 @@ console.log("Sacco name payment", saccoName)
 
 
   const handlePayment = async () => {
-console.log("Phone number", {phoneN})
+
+    await setShow(!show)
+    await setSHowConfirm(!showConfirm)
+    console.log("Phone number", { phoneN })
     // navigation.navigate("Receipt")
     await fetch(`https://uabiri-mpesa-api.onrender.com/stk-push`, {
       method: 'POST',
@@ -90,30 +109,23 @@ console.log("Phone number", {phoneN})
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       }
-
     })
-      .then((resp) => {
-        console.log('response now', resp)
-        if(!resp.ok){
-          console.log("this failed")
-        }else{
-        navigation.navigate('Receipt')
-      }
-      }).then((data) =>{
-        console.log("actualdata", data)
-      }
-
-      ).catch((err) => {
+      .then(async (response) => {
+        setShow(show)
+      }).catch((err) => {
+        setShow(show)
         console.log('Error', err)
       })
+  }
 
+  const handleConfirm = () => {
 
   }
 
 
 
   //Render page header
-  
+
   const renderHeader = () => {
     return (
       <View style={styles.header}>
@@ -156,7 +168,7 @@ console.log("Phone number", {phoneN})
       </View>
     )
   }
-  
+
 
   const renderBody = () => {
     return (
@@ -166,23 +178,31 @@ console.log("Phone number", {phoneN})
         flex: 1,
         flexDirection: "column"
       }}>
-      <View style={{
-        flex: 1,
-        flexDirection: "column"
-      }}>
-      <View style={{ flex:1,flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Date:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{date.toLocaleDateString()}</Text></View>
-        <View style={{flex:1, flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Time:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{date.toLocaleTimeString()}</Text></View>
-        <View style={{flex:1, flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Sacco Name:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.saccoName}</Text></View>
-        <View style={{flex:1, flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Route :</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.routeName}</Text></View>
-        <View style={{ flex:1,flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Vehicle Registration:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.vehicleRegistration}</Text></View>
-        <View style={{flex:1, flexDirection: 'row', justifyContent:'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Total payable:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{amount}</Text></View>
-      </View>
-       
-      <View style={{
-        flex: 1,
-        flexDirection: "column"
-      }}>
-        {renderButton()}
+        <View style={{
+          flex: 1,
+          flexDirection: "column"
+        }}>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Date:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{date.toLocaleDateString()}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Time:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{date.toLocaleTimeString()}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Sacco Name:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.saccoName}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Route :</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.routeName}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Vehicle Registration:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.vehicleRegistration}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Total payable:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{amount}</Text></View>
+        </View>
+
+        <View style={{
+          flex: 1,
+          flexDirection: "column"
+        }}>
+          {renderButton()}
+
+          {showConfirm &&
+            <View>
+              {renderButton2()}
+            </View>
+          }
+
+
         </View>
       </View>
     )
@@ -190,21 +210,43 @@ console.log("Phone number", {phoneN})
 
   const renderButton = () => {
     return (
-      <View style={{   justifyContent: 'center' }}>
+      <View style={{ justifyContent: 'center' }}>
         <LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.linearGradient}>
-        <TouchableOpacity
-          style={{
-            height: 60,
-            borderRadius: SIZES.radius / 1.5,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onPress={handlePayment}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 60,
+              borderRadius: SIZES.radius / 1.5,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={handlePayment}
+          >
+            {show ?
+              (
+                <ActivityIndicator size={25} color='white' />
+              ) : (
+                <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
+              )}
+          </TouchableOpacity>
         </LinearGradient>
         <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt to phone number {phoneN}. Kindly enter your M-Pesa pin to complete the transaction.</Text>
+      </View>
+    )
+  }
+
+  const renderButton2 = () => {
+    return (
+      <View style={{ justifyContent: 'center' }}>
+       {status.map((item)=>{
+       return(
+        <View>
+          <Text style={{color:"black"}}>
+            Status
+          </Text>
+          </View>
+       )
+       }
+       )}
       </View>
     )
   }
@@ -231,7 +273,7 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     flexDirection: "column",
-   
+
   },
 
   body: {

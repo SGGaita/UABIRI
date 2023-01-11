@@ -7,7 +7,9 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
-  ImageBackground
+  ImageBackground,
+  Alert,
+  ActivityIndicator
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -17,31 +19,82 @@ import { Timer } from '../../components/'
 
 export const Passenger = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null)
+  const [validNumber, setValidNumber] = useState('');
+  const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setSubmit] = useState(false)
   const [errorMsg, seterrorMsg] = useState("")
+  const [show, setShow] = useState(false)
 
 
-//Handle submit
-const handleSubmit = async() => {
-  setSubmit(true)
-  if (!phoneNumber) {
-    seterrorMsg("The phone number is required to proceed")
-    setSubmit(false)
-  }
-  if (phoneNumber) {
-    seterrorMsg(null)
+  //Handle text input change
+  const handleChange = (text) => {
 
-    try {
-      await AsyncStorage.setItem(
-        'userData',
-        phoneNumber
-      );
-    } catch (error) {
-      console.log('There has been an error setting item to asyncstorage')
+    let formattedPhoneNumber = text;
+    if (text.length === 12) {
+      setIsValid(true);
     }
-    navigation.navigate('Home')
+    if (!isValid) {
+
+      if (formattedPhoneNumber.length === 3 || formattedPhoneNumber.length === 7) {
+        formattedPhoneNumber += '-';
+      }
+    }
+    setPhoneNumber(formattedPhoneNumber);
   }
-}
+
+
+
+  //Handle submit
+  const handleContinue = async () => {
+    await setShow(!show)
+
+    if (!phoneNumber) {
+      Alert.alert('Phone number require', "The phone number is required to proceed")
+      await setShow(false)
+    }
+    if (phoneNumber) {
+      if (phoneNumber.length !== 11) {
+        Alert.alert('Invalid Phone number', 'Please enter a valid phone number. Format(xxx-xxx-xxx or 710-000-000)');
+        await setShow(false)
+      } else {
+        setValidNumber(`254${phoneNumber.replace(/-/g, '')}`)
+        try {
+          await AsyncStorage.setItem(
+            'userData',
+            validNumber
+          );
+          await setShow(false)
+          await navigation.navigate('Home')
+
+        } catch (error) {
+          Alert.alert('Error', 'There has been an error setting item to asyncstorage. Try again!')
+          await setShow(false)
+        }
+      }
+    }
+
+
+  };
+  // const handleSubmit = async () => {
+  //   setSubmit(true)
+  //   if (!phoneNumber) {
+  //     seterrorMsg("The phone number is required to proceed")
+  //     setSubmit(false)
+  //   }
+  //   if (phoneNumber) {
+  //     seterrorMsg(null)
+
+  //     try {
+  //       await AsyncStorage.setItem(
+  //         'userData',
+  //         phoneNumber
+  //       );
+  //     } catch (error) {
+  //       console.log('There has been an error setting item to asyncstorage')
+  //     }
+  //     navigation.navigate('Home')
+  //   }
+  // }
 
   const renderHeader = () => {
     return (
@@ -135,7 +188,7 @@ const handleSubmit = async() => {
               value="+254 (0)"
               disabled="true"
               selectionColor={COLORS.black}
-              keyboardType="numeric"
+
             />
 
             <TextInput
@@ -150,18 +203,18 @@ const handleSubmit = async() => {
                 fontWeight: "700"
               }}
               type="tel"
-              format="+1 (###) ###-####"
               autoFocus={true}
-              placeholder="700-123-456"
               placeholderTextColor={COLORS.gray}
               selectionColor={COLORS.black}
-              keyboardType="numeric"
-              onChangeText={text => setPhoneNumber('254' + '' + text)}
+              value={phoneNumber}
+              onChangeText={handleChange}
+              keyboardType="phone-pad"
+              placeholder="xxx-xxx-xxx"
             />
           </View>
- </View>
+        </View>
 
-          {/* <View
+        {/* <View
             style={{
               flex: 1,
               flexDirection: "row"
@@ -199,28 +252,33 @@ const handleSubmit = async() => {
 
   const renderButton = () => {
     return (
-      <View style={{ margin: SIZES.padding * 1,  justifyContent: 'center' }}>
+      <View style={{ margin: SIZES.padding * 1, justifyContent: 'center' }}>
         <LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.linearGradient}>
-        <TouchableOpacity
-          style={{
-            height: 60,
-            
-            borderRadius: SIZES.radius / 1.5,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onPress={handleSubmit}
-          disabled={isSubmitting}
-        >
-          <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 60,
+
+              borderRadius: SIZES.radius / 1.5,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={handleContinue}
+            disabled={isSubmitting}
+          >
+            {show ?
+              (
+                <ActivityIndicator size={25} color='white' />
+              ) : (
+                <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
+              )}
+          </TouchableOpacity>
         </LinearGradient>
-       
+
       </View>
     )
   }
 
-  
+
 
   return (
     <KeyboardAvoidingView
@@ -228,7 +286,7 @@ const handleSubmit = async() => {
       style={styles.container}>
       <ImageBackground style={{ flex: 1, backgroundColor: COLORS.blue }} source={images.nairobi}>
         {renderHeader()}
-        <Animatable.View  animation="fadeInUpBig" style={styles.body}>
+        <Animatable.View animation="fadeInUpBig" style={styles.body}>
           {renderBody()}
           {renderButton()}
         </Animatable.View>
@@ -247,7 +305,7 @@ const styles = StyleSheet.create({
 
     flex: 1,
     flexDirection: "column",
-   },
+  },
 
   body: {
     backgroundColor: COLORS.white,

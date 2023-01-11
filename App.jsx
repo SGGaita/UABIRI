@@ -16,7 +16,8 @@ import {
   VehicleOwner,
   RouteScreen,
   InformationScreen,
-  ResetScreen
+  ResetScreen,
+  ConfirmPayment
 } from './src/screens/index'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen'
@@ -60,7 +61,7 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false
-          }} initialRouteName="Profile">
+          }} initialRouteName="OnboardingScreen">
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Passenger" component={Passenger} />
@@ -69,6 +70,7 @@ const App = () => {
           <Stack.Screen name="RouteScreen" component={RouteScreen} />
           <Stack.Screen name="Vehicles" component={Vehicles} />
           <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="ConfirmPayment" component={ConfirmPayment}/>
           <Stack.Screen name="Receipt" component={Receipt} />
           <Stack.Screen name="Conductor" component={Conductor} />
           <Stack.Screen name="Owner" component={VehicleOwner} />
@@ -91,6 +93,7 @@ const App = () => {
           <Stack.Screen name="RouteScreen" component={RouteScreen} />
           <Stack.Screen name="Vehicles" component={Vehicles} />
           <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="ConfirmPayment" component={ConfirmPayment}/>
           <Stack.Screen name="Receipt" component={Receipt} />
           <Stack.Screen name="Conductor" component={Conductor} />
           <Stack.Screen name="Owner" component={VehicleOwner} />

@@ -6,7 +6,8 @@ import {
   Image,
   StyleSheet,
   FlatList,
-  ImageBackground
+  ImageBackground,
+  Alert
 } from 'react-native'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
 import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
@@ -18,18 +19,12 @@ import * as Animatable from 'react-native-animatable';
 
 
 
-
-
-
 export const Home = ({ navigation, route }) => {
 
   const [saccoData, setSaccos] = useState(null)
   const [searchText, setSearchText] = useState("");
   const [payloadData, setPayloadData] = useState()
   const [phoneN, setPhoneNumber] = useState(null)
-
-
-
 
 
 
@@ -60,7 +55,7 @@ export const Home = ({ navigation, route }) => {
       setPhoneNumber(phoneNumber)
     }
     catch (error) {
-      console.log('error', error)
+      Alert.alert('Error', 'There has been an error setting item to asyncstorage. Try again!')
     }
   }
 
@@ -149,7 +144,7 @@ export const Home = ({ navigation, route }) => {
                     }}
                     onPress={() => navigation.navigate("RouteScreen", {
                       saccoName: item.saccoName,
-                      saccoData: saccoData.filter(e=>e.saccoID === item.saccoID),
+                      saccoData: saccoData.filter(e => e.saccoID === item.saccoID),
                     })}
                   >
                     <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
@@ -161,29 +156,30 @@ export const Home = ({ navigation, route }) => {
               if (item.saccoName.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
                 return (
                   <TouchableOpacity
-                  style={{
-                    width: '100%',
-                    height: 70,
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginVertical: 10,
-                    backgroundColor: COLORS.white,
-                    borderRadius: 15,
-                    elevation: 4,
-                    position: "relative",
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                  }}
-                  onPress={() => navigation.navigate("RouteScreen", {
-                    saccoName: item.saccoName,
-                    saccoData: saccoData.filter(e=>e.saccoID === item.saccoID),
-                  })}
-                >
-                  <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                    <Text style={{ color: COLORS.black, fontWeight: "100", ...FONTS.h4 }}>{item.saccoID} {item.saccoName}</Text>
-                  </View>
-                </TouchableOpacity>
-                )}
+                    style={{
+                      width: '100%',
+                      height: 70,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginVertical: 10,
+                      backgroundColor: COLORS.white,
+                      borderRadius: 15,
+                      elevation: 4,
+                      position: "relative",
+                      paddingHorizontal: 15,
+                      flexDirection: 'row',
+                    }}
+                    onPress={() => navigation.navigate("RouteScreen", {
+                      saccoName: item.saccoName,
+                      saccoData: saccoData.filter(e => e.saccoID === item.saccoID),
+                    })}
+                  >
+                    <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                      <Text style={{ color: COLORS.black, fontWeight: "100", ...FONTS.h4 }}>{item.saccoID} {item.saccoName}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )
+              }
             }}
             showsHorizontalScrollIndicator={false}
           />
