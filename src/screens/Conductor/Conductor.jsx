@@ -32,7 +32,7 @@ export const Conductor = ({ route, navigation }) => {
  //fetch vehicle reg from asyncstorage
  const getVehicleReg = async () => {
   try {
-    const vehicleRegistration = await AsyncStorage.getItem('vehicleData')
+    const vehicleRegistration = await AsyncStorage.getItem('vehicleNumber')
     setVehicleReg(vehicleRegistration)
     
   }

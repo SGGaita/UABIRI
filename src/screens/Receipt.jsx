@@ -15,45 +15,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 
 export const Receipt = ({ navigation }) => {
-  const [transactions, setTransaction] = useState([])
-  const transactionArray = []
-  const [date, setDate] = useState(new Date())
-  const [phoneN, setPhoneNumber] = useState(null)
+  
 
   useEffect(() => {
-    getPhoneNumber()
-    getReceiptDetails()
-
-    console.log(parseInt(phoneN)); // 10
-    console.log(typeof parseInt(phoneN)); // "number"
+   
 
 
+  }, []);
+ // console.log('Status', transactions)
 
-  }, [phoneN]);
-
-
-  //fetch and filter transactions
-  const getReceiptDetails = () => {
-    console.log("Phone number", phoneN)
-    firestore()
-      .collection('Transactions')
-      .where('PhoneNumber', '==', parseInt(phoneN))
-      .get()
-      .then(querySnapshot => {
-        console.log('Total transactions: ', querySnapshot.size);
-
-
-        querySnapshot.forEach(documentSnapshot => {
-          transactionArray.push(documentSnapshot.data());
-          //console.log("transaction", transactionArray[transactionArray.length - 1])
-        });
-
-        setTransaction(transactionArray[transactionArray.length - 1])
-        console.log("Last Transaction", transactionArray[transactionArray.length - 1])
-        //console.log(findLastElementOfId(transactionArray, phoneN))
-
-      });
-  }
+  
 
   // const findLastElementOfId = (arr, id) => {
   //   return arr.filter(object => object.PhoneNumber === id).at(-1)
@@ -63,7 +34,9 @@ export const Receipt = ({ navigation }) => {
   const getPhoneNumber = async () => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
+      const vehicleID = await AsyncStorage.getItem('vehicleData')
       setPhoneNumber(phoneNumber)
+      setVehicleID(vehicleID)
     }
     catch (error) {
       console.log('error', error)
@@ -122,7 +95,7 @@ export const Receipt = ({ navigation }) => {
         flex: 1,
         flexDirection: "column"
       }}>
-        <View style={{ flex: 1, alignItems: 'center', alignSelf: 'center', marginBottom: 20, borderStyle: 'dashed', borderBottomWidth: 1 }}>
+        {/* <View style={{ flex: 1, alignItems: 'center', alignSelf: 'center', marginBottom: 20, borderStyle: 'dashed', borderBottomWidth: 1 }}>
           <Text style={{ ...FONTS.h1, fontWeight: '700', color: COLORS.darkgray }}>
             Mpesa Receipt Number
           </Text>
@@ -155,7 +128,7 @@ export const Receipt = ({ navigation }) => {
           flexDirection: "column"
         }}>
           {renderButton()}
-        </View>
+        </View> */}
 
       </View>
     )

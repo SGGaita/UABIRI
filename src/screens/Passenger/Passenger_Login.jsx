@@ -52,50 +52,28 @@ export const Passenger = ({ navigation }) => {
       Alert.alert('Phone number require', "The phone number is required to proceed")
       await setShow(false)
     }
+
+
     if (phoneNumber) {
       if (phoneNumber.length !== 11) {
         Alert.alert('Invalid Phone number', 'Please enter a valid phone number. Format(xxx-xxx-xxx or 710-000-000)');
         await setShow(false)
       } else {
-        setValidNumber(`254${phoneNumber.replace(/-/g, '')}`)
-        try {
+        const validNumber = `254${phoneNumber.replace(/-/g, '')}`
+        
           await AsyncStorage.setItem(
             'userData',
             validNumber
           );
           await setShow(false)
-          await navigation.navigate('Home')
-
-        } catch (error) {
-          Alert.alert('Error', 'There has been an error setting item to asyncstorage. Try again!')
-          await setShow(false)
-        }
+          navigation.navigate('Home')
       }
     }
 
 
   };
-  // const handleSubmit = async () => {
-  //   setSubmit(true)
-  //   if (!phoneNumber) {
-  //     seterrorMsg("The phone number is required to proceed")
-  //     setSubmit(false)
-  //   }
-  //   if (phoneNumber) {
-  //     seterrorMsg(null)
-
-  //     try {
-  //       await AsyncStorage.setItem(
-  //         'userData',
-  //         phoneNumber
-  //       );
-  //     } catch (error) {
-  //       console.log('There has been an error setting item to asyncstorage')
-  //     }
-  //     navigation.navigate('Home')
-  //   }
-  // }
-
+  
+  
   const renderHeader = () => {
     return (
       <View style={styles.header}>

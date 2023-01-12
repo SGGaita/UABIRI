@@ -42,7 +42,7 @@ export const TopTab = () => {
 
         querySnapshot.forEach(documentSnapshot => {
           transactionArray.push(documentSnapshot.data());
-          //console.log(transactionArray)
+          console.log(transactionArray)
         });
 
         setTransaction(transactionArray)
@@ -51,14 +51,14 @@ export const TopTab = () => {
 
   }, [vehicleReg])
 
-
+console.log("VehicleReg",vehicleReg)
 
 
 
   //fetch vehicle reg from asyncstorage
   const getVehicleReg = async () => {
     try {
-      const vehicleRegistration = await AsyncStorage.getItem('vehicleData')
+      const vehicleRegistration = await AsyncStorage.getItem('vehicleNumber')
       setVehicleReg(vehicleRegistration)
       //console.log(JSON.stringify(vehicleRegistration))
 
@@ -98,7 +98,7 @@ export const TopTab = () => {
             marginHorizontal: SIZES.padding * 1
           }}
         >
-          <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search M-Pesa Confirmation code to verify payment" />
+          <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Enter M-Pesa code to verify payment" />
         </View>
 
         <ScrollView>

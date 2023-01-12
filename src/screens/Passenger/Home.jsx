@@ -38,6 +38,7 @@ export const Home = ({ navigation, route }) => {
       });
 
     getPhoneNumber();
+    
 
     console.log("Saccos data", saccoData)
 
@@ -52,7 +53,7 @@ export const Home = ({ navigation, route }) => {
   const getPhoneNumber = async () => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
-      setPhoneNumber(phoneNumber)
+    await  setPhoneNumber(phoneNumber)
     }
     catch (error) {
       Alert.alert('Error', 'There has been an error setting item to asyncstorage. Try again!')

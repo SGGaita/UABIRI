@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native'
 import { Timer } from '../../components'
 import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
@@ -26,12 +27,16 @@ export const Payment = ({ navigation, route }) => {
   const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
   const [phoneN, setPhoneNumber] = useState(null)
   const [show, setShow] = useState(false)
-  const [showConfirm, setSHowConfirm] = useState(false)
-  const [status, setStatus] = useState({})
+  const [showConfirm, setShowConfirm] = useState(false)
 
 
   //get current date
   var date = new Date()
+  const startOfToday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+
+
 
   useEffect(() => {
     //get the time from the date value and pass it through the 24hr converter
@@ -43,29 +48,21 @@ export const Payment = ({ navigation, route }) => {
     //Get phone number
     getPhoneNumber();
 
-    // Get a reference to the "Transactions" collection
-    var transactionsRef = firestore().collection('Transactions');
 
-    // Listen for the last item added to the "transactions" collection
-    transactionsRef.orderBy('timestamp', 'desc').limit(1).onSnapshot((snapshot) => {
-      setStatus(snapshot.docs.map((doc) => ({
-        data: doc.data().MerchantRequestID
-        //console.log('The last item added was:', item);
-    })));
 
-    navigation.navigate('Receipt')
-    });
-    console.log("Test",status)
+
+
 
   }, [])
 
-  console.log(status)
+
 
   //fetch phone from asyncstorage
   const getPhoneNumber = async () => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
       setPhoneNumber(phoneNumber)
+
     }
     catch (error) {
       console.log('error', error)
@@ -93,7 +90,7 @@ export const Payment = ({ navigation, route }) => {
   const handlePayment = async () => {
 
     await setShow(!show)
-    await setSHowConfirm(!showConfirm)
+    await setShowConfirm(!showConfirm)
     console.log("Phone number", { phoneN })
     // navigation.navigate("Receipt")
     await fetch(`https://uabiri-mpesa-api.onrender.com/stk-push`, {
@@ -118,8 +115,14 @@ export const Payment = ({ navigation, route }) => {
       })
   }
 
-  const handleConfirm = () => {
-
+  const handleConfirm = async() => {
+    const vehicleID = paymentData1.vehicleRegistration
+      console.log(vehicle)  
+    await AsyncStorage.setItem(
+      'vehicleData',
+      vehicleID
+    );
+    navigation.navigate('Receipt')
   }
 
 
@@ -194,13 +197,12 @@ export const Payment = ({ navigation, route }) => {
           flex: 1,
           flexDirection: "column"
         }}>
+
+
+
           {renderButton()}
 
-          {showConfirm &&
-            <View>
-              {renderButton2()}
-            </View>
-          }
+
 
 
         </View>
@@ -211,25 +213,55 @@ export const Payment = ({ navigation, route }) => {
   const renderButton = () => {
     return (
       <View style={{ justifyContent: 'center' }}>
-        <LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.linearGradient}>
-          <TouchableOpacity
-            style={{
-              height: 60,
-              borderRadius: SIZES.radius / 1.5,
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onPress={handlePayment}
-          >
-            {show ?
-              (
-                <ActivityIndicator size={25} color='white' />
-              ) : (
-                <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
-              )}
-          </TouchableOpacity>
-        </LinearGradient>
-        <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt to phone number {phoneN}. Kindly enter your M-Pesa pin to complete the transaction.</Text>
+        {!showConfirm ?
+          (
+            <>
+              <LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.linearGradient}>
+                <TouchableOpacity
+                  style={{
+                    height: 60,
+                    borderRadius: SIZES.radius / 1.5,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  onPress={handlePayment}
+                >
+                  {show ?
+                    (
+                      <ActivityIndicator size={25} color='white' />
+                    ) : (
+                      <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
+                    )}
+                </TouchableOpacity>
+              </LinearGradient>
+              <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt to phone number {phoneN}. Kindly enter your M-Pesa pin to complete the transaction.</Text>
+            </>
+
+          ) : (
+            <>
+              <LinearGradient colors={['#111111', '#2a2a2a']} style={styles.linearGradient}>
+                <TouchableOpacity
+                  style={{
+                    height: 60,
+                    borderRadius: SIZES.radius / 1.5,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  onPress={handleConfirm}
+                >
+                  {show ?
+                    (
+                      <ActivityIndicator size={25} color='white' />
+                    ) : (
+                      <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Confirm Status</Text>
+                    )}
+                </TouchableOpacity>
+              </LinearGradient>
+
+            </>
+          )
+        }
+
       </View>
     )
   }
@@ -237,16 +269,22 @@ export const Payment = ({ navigation, route }) => {
   const renderButton2 = () => {
     return (
       <View style={{ justifyContent: 'center' }}>
-       {status.map((item)=>{
-       return(
-        <View>
-          <Text style={{color:"black"}}>
-            Status
-          </Text>
-          </View>
-       )
-       }
-       )}
+        <LinearGradient colors={['#000000', '#1e1e1e']} style={styles.linearGradient}>
+          <TouchableOpacity
+            style={{
+              height: 60,
+              borderRadius: SIZES.radius / 1.5,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={handleConfirm}
+          >
+            
+                <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Confirm Status</Text>
+             
+          </TouchableOpacity>
+        </LinearGradient>
+
       </View>
     )
   }
