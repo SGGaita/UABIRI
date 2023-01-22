@@ -11,8 +11,7 @@ import {
 } from 'react-native'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
 import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
-import { SearchBar, Timer } from '../../components/index'
-import { Regions } from '../../dummy/data'
+import { SearchBar, Timer, Filter } from '../../components/index'
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage'
 import * as Animatable from 'react-native-animatable';
@@ -21,7 +20,8 @@ import * as Animatable from 'react-native-animatable';
 
 export const Home = ({ navigation, route }) => {
 
-  const [saccoData, setSaccos] = useState(null)
+  const [saccoData, setSaccos] = useState([])
+  const [filteredSaccoData, setFilteredSaccos] = useState([])
   const [searchText, setSearchText] = useState("");
   const [payloadData, setPayloadData] = useState()
   const [phoneN, setPhoneNumber] = useState(null)
@@ -35,10 +35,11 @@ export const Home = ({ navigation, route }) => {
       .doc("ikZAfo3S0BDFDp1n70yn")
       .onSnapshot(documentSnapshot => {
         setSaccos(documentSnapshot.data().saccos);
+        setFilteredSaccos(documentSnapshot.data().saccos)
       });
 
     getPhoneNumber();
-    
+
 
     console.log("Saccos data", saccoData)
 
@@ -53,10 +54,21 @@ export const Home = ({ navigation, route }) => {
   const getPhoneNumber = async () => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
-    await  setPhoneNumber(phoneNumber)
+      await setPhoneNumber(phoneNumber)
     }
     catch (error) {
       Alert.alert('Error', 'There has been an error setting item to asyncstorage. Try again!')
+    }
+  }
+
+  //filter the data
+  const handleFilterChange = (text) => {
+    if(text === ''){
+      setFilteredSaccos(saccoData);
+    }else{
+     // filter the data based on the input text
+    const filtered = saccoData.filter(item => item.saccoName.toUpperCase().includes(text.toUpperCase().trim().replace(/\s/g, "")));
+    setFilteredSaccos(filtered);
     }
   }
 
@@ -117,14 +129,14 @@ export const Home = ({ navigation, route }) => {
         }}>
         {/**Search bar */}
         <View style={{ flex: 1 }}>
-          <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Search sacco" />
+          <Filter onChangeText={handleFilterChange} placeholder="Search saccos..." />
         </View>
 
         <View style={{ flex: 6 }}>
-          <Text style={{ fontWeight: "700", marginVertical: 10, borderBottomColor: COLORS.black, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h3 }}>Saccos</Text>
+          <Text style={{ fontWeight: "700", marginTop: 20, marginBottom: 10, color: COLORS.black, ...FONTS.h3 }}>Saccos</Text>
           <FlatList horizontal={false}
             style={styles.flatList}
-            data={saccoData}
+            data={filteredSaccoData}
             renderItem={({ item, index }) => {
 
               if (searchText === "") {
@@ -138,6 +150,9 @@ export const Home = ({ navigation, route }) => {
                       marginVertical: 10,
                       backgroundColor: COLORS.white,
                       borderRadius: 15,
+                      borderColor: COLORS.blue,
+                      borderStyle: "solid",
+                      borderWidth: 1,
                       elevation: 4,
                       position: "relative",
                       paddingHorizontal: 15,
@@ -154,33 +169,7 @@ export const Home = ({ navigation, route }) => {
                   </TouchableOpacity>
                 )
               }
-              if (item.saccoName.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
-                return (
-                  <TouchableOpacity
-                    style={{
-                      width: '100%',
-                      height: 70,
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginVertical: 10,
-                      backgroundColor: COLORS.white,
-                      borderRadius: 15,
-                      elevation: 4,
-                      position: "relative",
-                      paddingHorizontal: 15,
-                      flexDirection: 'row',
-                    }}
-                    onPress={() => navigation.navigate("RouteScreen", {
-                      saccoName: item.saccoName,
-                      saccoData: saccoData.filter(e => e.saccoID === item.saccoID),
-                    })}
-                  >
-                    <View style={{ flex: 1, paddingHorizontal: 30, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                      <Text style={{ color: COLORS.black, fontWeight: "100", ...FONTS.h4 }}>{item.saccoID} {item.saccoName}</Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              }
+
             }}
             showsHorizontalScrollIndicator={false}
           />

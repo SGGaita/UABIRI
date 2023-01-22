@@ -17,11 +17,32 @@ import * as Animatable from 'react-native-animatable';
 
 import { COLORS, SIZES, icons, images, FONTS } from '../../constants'
 import { Timer } from '../../components';
+import firestore from '@react-native-firebase/firestore';
 
 export const Login = ({ navigation }) => {
 
+  const [region, setRegion] = useState({});
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [exists, setExists] = useState(false);
+
+
+  useEffect(() => {
+    //fetch Regions data
+    firestore().collection("Regions")
+      .doc("ikZAfo3S0BDFDp1n70yn")
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setRegion(doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      });
+  }, []);
+
+
+
 
   //Handle  Vehicle number formatting
   const handleVehicleNumber = async (text) => {
@@ -33,19 +54,39 @@ export const Login = ({ navigation }) => {
       console.log("Error saving data" + error);
     }
   };
+ // console.log(typeof vehicleNumber)
 
   //Handle submit
   const handleSubmit = async () => {
     setIsLoading(true);
-    const vehicleNumberRegex = /^([a-zA-Z]{3})(\d{3})([a-zA-Z])$/;
+    setExists(false);
+
     if (!vehicleNumber) {
       setIsLoading(false);
       Alert.alert("Vehicle Number Required", "Please enter a vehicle number first");
     } else {
       // Perform some async operation here, like sending data to a server or saving data to a local database
       // Once the async operation is complete, set isLoading to false
-      setIsLoading(false);
-      navigation.navigate('Conductor');
+      // region.saccos.forEach(sacco => {
+      //   //console.log("Saccos", sacco)
+      //   if (sacco.routes && sacco.routes.forEach) {
+      //     sacco.routes.forEach(route => {
+      //       //console.log("Routes", route)
+      //       route.vehicles.forEach(vehicle => {
+      //         console.log("Vehicles", vehicle.vehicleRegistration)
+      //         if (vehicle.vehicleRegistration === vehicleNumber.toString()) {
+      //           setExists(true);
+      //         }
+      //       });
+      //     });
+      //   }
+
+      // });
+     
+        setIsLoading(false);
+        navigation.navigate('Conductor');
+        // kk
+      
     }
   };
 
@@ -151,7 +192,11 @@ export const Login = ({ navigation }) => {
             }}
             onPress={handleSubmit}
           >
-            <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
+            {isLoading ? (
+              <ActivityIndicator size={25} color='white' />
+            ) : (
+              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
+            )}
           </TouchableOpacity>
         </LinearGradient>
 

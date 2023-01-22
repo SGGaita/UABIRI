@@ -1,23 +1,34 @@
 import { View, Text, KeyboardAvoidingView, StyleSheet, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { SearchBar, Timer } from '../../components'
+import { Filter, Timer } from '../../components'
 import { COLORS, FONTS, SIZES, icons, images } from '../../constants';
 import * as Animatable from 'react-native-animatable';
 
 export const Vehicles = ({ navigation, route }) => {
 
-    const [searchText, setSearchText] = useState("");
-    const { routeData, paymentData, saccoName } = route.params
-    const [vehiclesData, setVehiclesData] = useState(routeData.vehicles)
-    const [paymentData3, setPaymentData] = useState({ ...paymentData, saccoName })
-    //
+  const [searchText, setSearchText] = useState("");
+  const { routeData, paymentData, saccoName } = route.params
+  const [vehiclesData, setVehiclesData] = useState(routeData.vehicles)
+  const [filterVehicleData, setFilterVehicleData] = useState(vehiclesData)
+  const [paymentData3, setPaymentData] = useState({ ...paymentData, saccoName })
+  //
 
-    useEffect(() => {
-        setPaymentData({ ...paymentData3, routeName: routeData.routeName })
-    }, [])
+  useEffect(() => {
+    setPaymentData({ ...paymentData3, routeName: routeData.routeName })
+  }, [])
 
-    //Render page header
-    
+  //
+  const handleChangeText = (text)=>{
+    if (text === '') {
+      setFilterVehicleData(vehiclesData);
+     } else {
+       // filter the data based on the input text
+       const filtered = vehiclesData.filter(item => item.vehicleRegistration.toUpperCase().includes(text.toUpperCase().trim().replace(/\s/g, "")));
+       setFilterVehicleData(filtered);
+     }
+  }
+  
+  //Render page header
   const renderHeader = () => {
     return (
       <View style={styles.header}>
@@ -61,113 +72,89 @@ export const Vehicles = ({ navigation, route }) => {
     )
   }
 
-    //render body
-    const renderBody = () => {
-        return (
-            <View style={{ flex: 1 }}>
-                <View style={{ flex: 1 }}>
-                    <SearchBar searchText={searchText} placeholder="Search route..." />
-                </View>
-                <View style={{ flex: 7 }} >
-                    <Text style={{ fontWeight: "700", marginVertical: 10, borderBottomWidth: 1, color: COLORS.black, ...FONTS.h3 }}>
-                        Vehicles
-                    </Text>
-                    <View>
-                        <FlatList data={vehiclesData} renderItem={
-                            ({ item, index }) => {
-                                if (searchText === "") {
-                                    return (
-                                        <TouchableOpacity
-
-                                            style={{
-                                                width: '100%',
-                                                height: 70,
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                marginVertical: 10,
-                                                backgroundColor: COLORS.white,
-                                                borderRadius: 15,
-                                                elevation: 4,
-                                                position: "relative",
-                                                paddingHorizontal: 15,
-                                                flexDirection: 'row',
-                                            }}
-                                            onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
-                                        >
-                                            <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                                                <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h4 }}>{index + 1}.{item.vehicleRegistration}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-
-                                if (item.vehicleRegistration.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
-                                    return (
-                                        <TouchableOpacity
-
-                                            style={{
-                                                width: '100%',
-                                                height: 100,
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                marginVertical: 10,
-                                                backgroundColor: COLORS.white,
-                                                borderRadius: 20,
-                                                elevation: 4,
-                                                position: "relative",
-                                                paddingHorizontal: 15,
-                                                flexDirection: 'row',
-                                            }}
-                                            onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
-                                        >
-                                            <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                                                <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h2 }}>{index + 1}.{item.vehicleRegistration}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            }
-
-                        } />
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
+  //render body
+  const renderBody = () => {
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}>
-            <ImageBackground style={{ flex: 1, backgroundColor: COLORS.blue }} source={images.nairobi}>
-                {renderHeader()}
-                <Animatable.View animation="fadeInUpBig" style={styles.body}>
-                    {renderBody()}
-                </Animatable.View>
-            </ImageBackground>
-        </KeyboardAvoidingView>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <Filter onChangeText={handleChangeText} placeholder="Search vehicle..." />
+        </View>
+        <View style={{ flex: 7 }} >
+          <Text style={{ fontWeight: "700",marginTop: 25, marginBottom: 10,  color: COLORS.black, ...FONTS.h3 }}>
+            Vehicles
+          </Text>
+          <View>
+            <FlatList data={filterVehicleData} renderItem={
+              ({ item, index }) => {
+                
+                  return (
+                    <TouchableOpacity
+
+                      style={{
+                        width: '100%',
+                        height: 70,
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginVertical: 10,
+                        backgroundColor: COLORS.white,
+                        borderRadius: 15,
+                        borderColor: COLORS.blue,
+                        borderStyle: "solid",
+                        borderWidth: 1,
+                        elevation: 4,
+                        position: "relative",
+                        paddingHorizontal: 15,
+                        flexDirection: 'row',
+                      }}
+                      onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
+                    >
+                      <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
+                        <Text style={{ color: COLORS.blue, fontWeight: "600", ...FONTS.h4 }}>{index + 1}.{item.vehicleRegistration}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )
+                }
+
+            } />
+          </View>
+        </View>
+      </View>
     )
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}>
+      <ImageBackground style={{ flex: 1, backgroundColor: COLORS.blue }} source={images.nairobi}>
+        {renderHeader()}
+        <Animatable.View animation="fadeInUpBig" style={styles.body}>
+          {renderBody()}
+        </Animatable.View>
+      </ImageBackground>
+    </KeyboardAvoidingView>
+  )
 }
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+  container: {
+    flex: 1,
+  },
 
-    header: {
-        flex: 1,
-        flexDirection: "column",
+  header: {
+    flex: 1,
+    flexDirection: "column",
 
-    },
+  },
 
-    body: {
-        flex: 4,
-        backgroundColor: COLORS.white,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        padding: 20,
-        flexDirection: 'column'
-    },
+  body: {
+    flex: 4,
+    backgroundColor: COLORS.white,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 20,
+    flexDirection: 'column'
+  },
 })
 

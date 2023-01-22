@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { KeyboardAvoidingView, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { COLORS, SIZES, icons, images, FONTS } from '../../constants'
 import * as Animatable from 'react-native-animatable';
-import { SearchBar, Timer } from '../../components/index'
+import { Filter, Timer } from '../../components/index'
 
 export const RouteScreen = ({ navigation, route }) => {
 
@@ -10,11 +10,23 @@ export const RouteScreen = ({ navigation, route }) => {
   const [searchText, setSearchText] = useState("");
 
   const data = saccoData.map(x => x.routes).flat()
-  
+  const [filteredRoutes, setFilteredRoutes] = useState(data)
+
 
   useEffect(() => {
-    
+
   }, [])
+
+  const handleChangeText = (text) => {
+    if (text === '') {
+      setFilteredRoutes(data);
+    } else {
+      // filter the data based on the input text
+      const filtered = data.filter(item => item.routeName.toUpperCase().includes(text.toUpperCase().trim().replace(/\s/g, "")));
+      setFilteredRoutes(filtered);
+    }
+
+  }
 
   //Render page header
   const renderHeader = () => {
@@ -64,7 +76,7 @@ export const RouteScreen = ({ navigation, route }) => {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
-          <SearchBar searchText={searchText} placeholder="Search route..." />
+          <Filter onChangeText={handleChangeText} placeholder="Search route..." />
         </View>
         <View style={{ flex: 7 }}>
           <Text
@@ -79,79 +91,48 @@ export const RouteScreen = ({ navigation, route }) => {
           </Text>
 
           {/* Render Routes list */}
-          {data.map((item, index) => {
-            if (searchText === "") {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={{
-                    width: '100%',
-                    height: 100,
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginVertical: 10,
-                    backgroundColor: COLORS.white,
-                    borderRadius: 20,
-                    elevation: 4,
-                    position: "relative",
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                  }}
-                  onPress={() => navigation.navigate("Vehicles", {
-                    routeData: item,
-                    saccoName: saccoName
-                  })}
-                >
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ color: COLORS.black, marginRight: 5, fontWeight: "700", ...FONTS.body3 }}>{index + 1}.</Text><Text style={{ color: COLORS.black, fontWeight: "200", ...FONTS.h4 }}>{item.routeName}</Text>
-                  </View>
-                  <View>
-                    <Image source={icons.forward} resizeMode="contain" style={{
-                      width: 15,
-                      height: 15,
-                      tintColor: COLORS.black
-                    }} />
-                  </View>
-                </TouchableOpacity>
-              )
-            }
+          {filteredRoutes.map((item, index) => {
 
-            if (item.routeName.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={{
-                    width: '100%',
-                    height: 100,
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginVertical: 10,
-                    backgroundColor: COLORS.white,
-                    borderRadius: 20,
-                    elevation: 4,
-                    position: "relative",
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                  }}
-                  onPress={() => navigation.navigate("Vehicles", {
-                    routeData: item,
-                    saccoName: saccoName
-                  })}
-                >
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ color: COLORS.black, marginRight: 5, fontWeight: "700", ...FONTS.body3 }}>{index + 1}.</Text><Text style={{ color: COLORS.black, fontWeight: "200", ...FONTS.h4 }}>{item.routeName}</Text>
-                  </View>
-                  <View>
-                    <Image source={icons.forward} resizeMode="contain" style={{
-                      width: 15,
-                      height: 15,
-                      tintColor: COLORS.black
-                    }} />
-                  </View>
-                </TouchableOpacity>
-              )
-            }
-           
+            return (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  width: '100%',
+                  height: 100,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 20,
+                  borderColor: COLORS.blue,
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                  elevation: 4,
+                  position: "relative",
+                  paddingHorizontal: 15,
+                  flexDirection: 'row',
+                }}
+                onPress={() => navigation.navigate("Vehicles", {
+                  routeData: item,
+                  saccoName: saccoName
+                })}
+              >
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ color: COLORS.blue, marginRight: 5, fontWeight: "700", ...FONTS.body3 }}>{index + 1}.</Text><Text style={{ color: COLORS.blue, fontWeight: "200", ...FONTS.h4 }}>{item.routeName}</Text>
+                </View>
+                <View>
+                  <Image source={icons.forward} resizeMode="contain" style={{
+                    width: 15,
+                    height: 15,
+                    tintColor: COLORS.blue
+                  }} />
+                </View>
+              </TouchableOpacity>
+            )
+
+
+
+
           })}
         </View>
       </View>
@@ -159,9 +140,9 @@ export const RouteScreen = ({ navigation, route }) => {
   }
 
   return (
-    <KeyboardAvoidingView 
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}>
       <ImageBackground style={{ flex: 1, backgroundColor: COLORS.blue }} source={images.nairobi}>
         {renderHeader()}
 

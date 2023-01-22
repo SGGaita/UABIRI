@@ -73,7 +73,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -91,12 +93,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.darkgray,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ ...FONTS.h5, color: COLORS.black }}>Home</Text>
+            <Text style={{ ...FONTS.h5, color: COLORS.blue }}>Home</Text>
           </View>
         </TouchableOpacity>
 
@@ -109,7 +111,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -127,12 +131,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.black,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ ...FONTS.h5, color: COLORS.black }}>Past Payments</Text>
+            <Text style={{ ...FONTS.h5, color: COLORS.blue }}>Past Payments</Text>
           </View>
         </TouchableOpacity>
 
@@ -145,7 +149,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -163,12 +169,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.black,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ ...FONTS.h5, color: COLORS.black }}>Privacy Policy</Text>
+            <Text style={{ ...FONTS.h5, color: COLORS.blue }}>Privacy Policy</Text>
           </View>
         </TouchableOpacity>
 
@@ -181,7 +187,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -199,12 +207,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.black,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ color: COLORS.black }}>Contact Us </Text>
+            <Text style={{ color: COLORS.blue }}>Contact Us </Text>
           </View>
         </TouchableOpacity>
 
@@ -217,7 +225,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -235,12 +245,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.black,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ color: COLORS.black }}>About UAbiri </Text>
+            <Text style={{ color: COLORS.blue }}>About UAbiri </Text>
           </View>
         </TouchableOpacity>
 
@@ -253,7 +263,9 @@ export const InformationScreen = ({ navigation }) => {
             marginVertical: 10,
             backgroundColor: COLORS.white,
             borderRadius: 15,
-            borderColor:COLORS.lime,
+            borderColor:COLORS.blue,
+            borderStyle:"solid",
+            borderWidth:  1,
             elevation: 4,
             paddingHorizontal: 15,
             flexDirection: 'column',
@@ -271,12 +283,12 @@ export const InformationScreen = ({ navigation }) => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: COLORS.black,
+                tintColor: COLORS.blue,
               }}
             />
           </View>
           <View>
-            <Text style={{ color: COLORS.black }}>Logout </Text>
+            <Text style={{ color: COLORS.blue }}>Logout </Text>
           </View>
         </TouchableOpacity>
 

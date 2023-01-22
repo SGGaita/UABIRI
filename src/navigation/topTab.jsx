@@ -4,8 +4,8 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  ScrollView,
+  TextInput,
+
   KeyboardAvoidingView
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
@@ -21,38 +21,29 @@ const Tab = createMaterialTopTabNavigator();
 
 export const TopTab = () => {
 
-  const [mpesaCode, setMpesaCode] = useState(null);
+
   const [vehicleReg, setVehicleReg] = useState("");
   const [transactions, setTransaction] = useState([])
   const transactionArray = []
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    //console.log("vehicle re", transactions)
+   //fetch all transactions that match vehicle  Number
+   firestore.collection('Transactions')
+   .get()
+   .then((doc)=>{
+    console.log("Docs", doc)
+   })
 
     getVehicleReg()
 
-    firestore()
-      .collection('Transactions')
-      .where('vehicleRegistration', '==', `${vehicleReg}`)
-      .get()
-      .then(querySnapshot => {
-        //console.log('Total transactions: ', querySnapshot.size);
 
-
-        querySnapshot.forEach(documentSnapshot => {
-          transactionArray.push(documentSnapshot.data());
-          console.log(transactionArray)
-        });
-
-        setTransaction(transactionArray)
-
-      });
 
   }, [vehicleReg])
 
-console.log("VehicleReg",vehicleReg)
+  console.log("VehicleReg", vehicleReg)
 
+  //handleSearch
 
 
   //fetch vehicle reg from asyncstorage
@@ -70,22 +61,7 @@ console.log("VehicleReg",vehicleReg)
 
 
 
-  const handleQuery = () => {
-    //filter using mpesa query
-    transactions.filter((e, index) => e.MpesaReceiptNumber == `${vehicleReg}`
-    ).map((transaction, i) => {
-      const isEmpty = Object.keys(transaction) === 0
-
-      if (isEmpty == false) {
-        console.log(transaction.MpesaReceiptNumber)
-      }
-
-
-
-    })
-
-
-  }
+  
 
   const QueryScreen = () => {
     return (
@@ -98,77 +74,29 @@ console.log("VehicleReg",vehicleReg)
             marginHorizontal: SIZES.padding * 1
           }}
         >
-          <SearchBar searchText={searchText} setSearchText={setSearchText} placeholder="Enter M-Pesa code to verify payment" />
+
+          <View style={{ flexDirection: "row", marginTop: SIZES.padding * 1 }}>
+            <TextInput
+              style={{
+                marginVertical: SIZES.padding,
+                paddingHorizontal: SIZES.padding,
+                border: COLORS.grey,
+                borderWidth: 1,
+                borderRadius: 20,
+                height: 40,
+                color: COLORS.black,
+                ...FONTS.body3,
+                flex: 3,
+              }}
+              placeholder='Enter M-Pesa confirmation code to query'
+              placeholderTextColor={COLORS.secondary}
+              selectionColor={COLORS.black}
+
+            />
+          </View>
         </View>
 
-        <ScrollView>
-          {transactions.map((item, index) => {
 
-if (searchText === "") {
-   return (
-            <TouchableOpacity
-            key={index}
-            style={{
-              flex:1,
-              width: '100%',
-              height: 120,
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              marginVertical: 10,
-              backgroundColor: COLORS.white,
-              borderRadius: 15,
-              elevation: 4,
-              position: "relative",
-              padding: 15,
-              flexDirection: 'column',
-            }}
-            >
-              <View style={{flex:1, flexDirection:'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>{index+1}. Mpesa Code: {item.MpesaReceiptNumber} </Text>
-              <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>Phone: {item.PhoneNumber} </Text>
-              </View>
-              <View style={{flex:1, justifyContent: 'space-between',flexDirection:'row' }}>
-              <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>Amount: {item.Amount} </Text>
-              </View>
-              
-              
-            </TouchableOpacity>
-            )
-          }
-
-          if (item.PhoneNumber.toUpperCase().includes(searchText.toUpperCase().trim().replace(/\s/g, ""))) {
-            return (
-              <TouchableOpacity
-              key={index}
-              style={{
-                flex:1,
-                width: '100%',
-                height: 120,
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                marginVertical: 10,
-                backgroundColor: COLORS.white,
-                borderRadius: 15,
-                elevation: 4,
-                position: "relative",
-                padding: 15,
-                flexDirection: 'column',
-              }}
-              >
-                <View style={{flex:1, flexDirection:'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>{index+1}. Mpesa Code: {item.MpesaReceiptNumber} </Text>
-                <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>Phone: {item.PhoneNumber} </Text>
-                </View>
-                <View style={{flex:1, justifyContent: 'space-between',flexDirection:'row' }}>
-                <Text style={{ color: COLORS.black, fontWeight: "500", ...FONTS.h5 }}>Amount: {item.Amount} </Text>
-                </View>
-                
-                
-              </TouchableOpacity>
-              )
-          }
-          })}
-        </ScrollView>
 
       </KeyboardAvoidingView>
     );
@@ -184,8 +112,9 @@ if (searchText === "") {
 
   return (
     <Tab.Navigator style={styles.tabs}>
-      <Tab.Screen name="Query Payment" component={QueryScreen} />
       <Tab.Screen name="Transactions" component={TransactionsScreen} />
+      <Tab.Screen name="Query M-Pesa Code" component={QueryScreen} />
+
     </Tab.Navigator>
   );
 
