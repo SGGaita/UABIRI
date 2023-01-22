@@ -109,7 +109,7 @@ export const Vehicles = ({ navigation, route }) => {
                       onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
                     >
                       <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
-                        <Text style={{ color: COLORS.blue, fontWeight: "600", ...FONTS.h4 }}>{index + 1}.{item.vehicleRegistration}</Text>
+                        <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h4 }}>{index + 1}.{item.vehicleRegistration}</Text>
                       </View>
                     </TouchableOpacity>
                   )

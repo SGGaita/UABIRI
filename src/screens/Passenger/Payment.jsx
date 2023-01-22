@@ -27,16 +27,10 @@ export const Payment = ({ navigation, route }) => {
   const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
   const [phoneN, setPhoneNumber] = useState(null)
   const [show, setShow] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
 
 
   //get current date
   var date = new Date()
-  const startOfToday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000 - 1);
-
-
-
 
   useEffect(() => {
     //get the time from the date value and pass it through the 24hr converter
@@ -47,13 +41,7 @@ export const Payment = ({ navigation, route }) => {
 
     //Get phone number
     getPhoneNumber();
-
-
-
-
-
-
-  }, [])
+ }, [])
 
 
 
@@ -62,8 +50,7 @@ export const Payment = ({ navigation, route }) => {
     try {
       const phoneNumber = await AsyncStorage.getItem('userData')
       setPhoneNumber(phoneNumber)
-
-    }
+ }
     catch (error) {
       console.log('error', error)
     }
@@ -90,7 +77,7 @@ export const Payment = ({ navigation, route }) => {
   const handlePayment = async () => {
 
     await setShow(!show)
-    await setShowConfirm(!showConfirm)
+    
     console.log("Phone number", { phoneN })
     // navigation.navigate("Receipt")
     await fetch(`https://uabiri-mpesa-api.onrender.com/stk-push`, {
@@ -108,22 +95,46 @@ export const Payment = ({ navigation, route }) => {
       }
     })
       .then(async (response) => {
-        setShow(show)
+        //Triger and return realtime data only when the already set dat has been modified & the message property is present
+        const subscriber = firestore().collection('Transactions')
+          .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach(change => {
+              if (change.type === 'modified' && change.doc.data().message) {
+                const data = change.doc.data();
+                // perform action with the data
+                setTimeout(() => {
+
+                  if (data.message === "The service request is processed successfully.") {
+                    navigation.navigate('Receipt', {receipt: data});
+                    setShow(show)
+                  } 
+                  if (data.message === "Request cancelled by user"){
+                    Alert.alert("Transaction cancelled",`${data.message}`);
+                    console.log("Data:", data);
+                    setShow(show)
+                  }
+
+                  if (data.message === "DS timeout user cannot be reached"){
+                    Alert.alert("Request timed out",`${data.message}`);
+                    console.log("Data:", data);
+                    setShow(show)
+                  }
+                },2000)
+                //
+                
+              }
+            });
+          });
+        // Stop listening for updates when no longer required
+        return () => subscriber();
+
       }).catch((err) => {
         setShow(show)
         console.log('Error', err)
       })
   }
 
-  const handleConfirm = async() => {
-    const vehicleID = paymentData1.vehicleRegistration
-      console.log(vehicle)  
-    await AsyncStorage.setItem(
-      'vehicleData',
-      vehicleID
-    );
-    navigation.navigate('Receipt')
-  }
+  
 
 
 
@@ -197,15 +208,9 @@ export const Payment = ({ navigation, route }) => {
           flex: 1,
           flexDirection: "column"
         }}>
-
-
-
           {renderButton()}
 
-
-
-
-        </View>
+  </View>
       </View>
     )
   }
@@ -213,8 +218,7 @@ export const Payment = ({ navigation, route }) => {
   const renderButton = () => {
     return (
       <View style={{ justifyContent: 'center' }}>
-        {!showConfirm ?
-          (
+        
             <>
               <LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.linearGradient}>
                 <TouchableOpacity
@@ -228,7 +232,11 @@ export const Payment = ({ navigation, route }) => {
                 >
                   {show ?
                     (
-                      <ActivityIndicator size={25} color='white' />
+                      
+                      <View style={{ alignItems: 'center' }}>
+                      <ActivityIndicator size={25} color="#fff" />
+                      <Text style={{ marginTop: 8, color:"#fff" }}>Wait as M-Pesa payment is processed.</Text>
+                    </View>
                     ) : (
                       <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Pay Fare: Kes{amount}</Text>
                     )}
@@ -237,30 +245,7 @@ export const Payment = ({ navigation, route }) => {
               <Text style={{ marginTop: 5, color: COLORS.black, ...FONTS.h4, color: COLORS.gray, alignSelf: 'center' }}>Note: You will receive an Mpesa prompt to phone number {phoneN}. Kindly enter your M-Pesa pin to complete the transaction.</Text>
             </>
 
-          ) : (
-            <>
-              <LinearGradient colors={['#111111', '#2a2a2a']} style={styles.linearGradient}>
-                <TouchableOpacity
-                  style={{
-                    height: 60,
-                    borderRadius: SIZES.radius / 1.5,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  onPress={handleConfirm}
-                >
-                  {show ?
-                    (
-                      <ActivityIndicator size={25} color='white' />
-                    ) : (
-                      <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Confirm Status</Text>
-                    )}
-                </TouchableOpacity>
-              </LinearGradient>
-
-            </>
-          )
-        }
+        
 
       </View>
     )
@@ -279,9 +264,9 @@ export const Payment = ({ navigation, route }) => {
             }}
             onPress={handleConfirm}
           >
-            
-                <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Confirm Status</Text>
-             
+
+            <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Confirm Status</Text>
+
           </TouchableOpacity>
         </LinearGradient>
 

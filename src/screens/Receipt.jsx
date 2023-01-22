@@ -14,34 +14,42 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 
-export const Receipt = ({ navigation }) => {
-  
+export const Receipt = ({ navigation, route }) => {
+  const {receipt} = route.params
+
+// Timestamp in the format of YYYYMMDDHHmmss
+const timestamp = "20230122152819";
+
+// Extract the date and time values
+const year = timestamp.slice(0, 4);
+const month = timestamp.slice(4, 6);
+const day = timestamp.slice(6, 8);
+const hour = timestamp.slice(8, 10);
+const minute = timestamp.slice(10, 12);
+const second = timestamp.slice(12);
+
+// Create a new Date object and set the values
+const date = new Date(year, month - 1, day, hour, minute, second);
+
+const dateOnly = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+const timeOnly = new Date(0, 0, 0, date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
+
+console.log("Date: " + dateOnly.toString());
+console.log("Time: " + timeOnly.toString());
+
 
   useEffect(() => {
-   
-
-
+    
   }, []);
- // console.log('Status', transactions)
-
   
 
-  // const findLastElementOfId = (arr, id) => {
-  //   return arr.filter(object => object.PhoneNumber === id).at(-1)
-  // }
+//navigate back home
+const handleBackHome = ()=>{
+  //TODO clear all asynchstorage 
+  navigation.navigate('Home')
+}
 
-  //fetch phone from asyncstorage
-  const getPhoneNumber = async () => {
-    try {
-      const phoneNumber = await AsyncStorage.getItem('userData')
-      const vehicleID = await AsyncStorage.getItem('vehicleData')
-      setPhoneNumber(phoneNumber)
-      setVehicleID(vehicleID)
-    }
-    catch (error) {
-      console.log('error', error)
-    }
-  }
+  
 
 
   const renderHeader = () => {
@@ -95,40 +103,47 @@ export const Receipt = ({ navigation }) => {
         flex: 1,
         flexDirection: "column"
       }}>
-        {/* <View style={{ flex: 1, alignItems: 'center', alignSelf: 'center', marginBottom: 20, borderStyle: 'dashed', borderBottomWidth: 1 }}>
+        
+        <View style={{ flex: 1, alignItems: 'center', marginBottom: 20}}>
+        <Text style={{ ...FONTS.h3,marginLeft: 10,marginBottom: 5, fontWeight: '700',color: COLORS.black,alignSelf:'flex-start' }}>Hello +245723272915 !</Text>
+        <Text style={{ ...FONTS.h4,marginLeft: 10,marginBottom: 20, fontWeight: '200',color: COLORS.black,alignSelf:'flex-start' }}>The service request is processed successfully.</Text>
           <Text style={{ ...FONTS.h1, fontWeight: '700', color: COLORS.darkgray }}>
-            Mpesa Receipt Number
+            Receipt Number
           </Text>
-          <Text style={{ ...FONTS.body1, color: "gray" }}>
-            {transactions?.MpesaReceiptNumber}
+          <Text style={{ borderStyle: 'dashed', borderBottomWidth: 1 ,...FONTS.body1, color: "gray" }}>
+            {receipt?.MpesaReceiptNumber}
           </Text>
+          {/* <Text style={{ ...FONTS.body2, color: "gray" }}>
+            Date: 
+          </Text> */}
+           <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', padding: 10, marginBottom: 20, borderStyle: 'dashed', borderBottomWidth: 1 }}>
+          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4, fontWeight: '800', flex: 3, color: COLORS.black }}>Amount:</Text>
+            <Text style={{ color: COLORS.black, flex: 1, ...FONTS.body3 }}>{receipt?.Amount}</Text>
+          </View>
+
+          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4, fontWeight: '800', flex: 3, color: COLORS.black }}>Vehicle Registration:</Text>
+            <Text style={{ color: COLORS.black, flex: 1, ...FONTS.body3 }}>{receipt?.vehicleRegistration}</Text>
+          </View>
+
+          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4, fontWeight: '800', flex: 3, color: COLORS.black }}>Sacco:</Text>
+            <Text style={{ color: COLORS.black, flex: 1, ...FONTS.body3 }}>{receipt?.saccoName}</Text>
+          </View>
+
+          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4, fontWeight: '800', flex: 3, color: COLORS.black }}>Route:</Text>
+            <Text style={{ color: COLORS.black, flex: 1, ...FONTS.body3 }}>{receipt?.routeName}</Text>
+          </View>
+
+        </View>
         </View>
 
-        <View style={{ flex: 1, flexDirection: 'column',justifyContent:'flex-start', alignItems: 'center',padding: 10,marginBottom: 20, borderStyle: 'dashed', borderBottomWidth: 1 }}>
-          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4,fontWeight: '800', flex: 3, color: COLORS.black }}>Amount:</Text>
-            <Text style={{ color: COLORS.black, flex: 1,...FONTS.body3 }}>{transactions?.Amount}</Text>
-          </View>
-
-          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4,fontWeight: '800', flex: 3, color: COLORS.black }}>Vehicle Registration:</Text>
-            <Text style={{ color: COLORS.black, flex: 1,...FONTS.body3 }}>{transactions?.vehicleRegistration}</Text>
-          </View>
-
-          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4,fontWeight: '800', flex: 3, color: COLORS.black }}>Sacco:</Text>
-            <Text style={{ color: COLORS.black, flex: 1,...FONTS.body3 }}>{transactions?.saccoName}</Text>
-          </View>
-
-          <View style={{ flex: 1, flexDirection: 'row' }}><Text style={{ ...FONTS.h4,fontWeight: '800', flex: 3, color: COLORS.black }}>Route:</Text>
-            <Text style={{ color: COLORS.black, flex: 1,...FONTS.body3 }}>{transactions?.routeName}</Text>
-          </View>
-          
-        </View>
+       
 
         <View style={{
           flex: 1,
           flexDirection: "column"
         }}>
           {renderButton()}
-        </View> */}
+        </View>
 
       </View>
     )
@@ -145,7 +160,7 @@ export const Receipt = ({ navigation }) => {
               alignItems: 'center',
               justifyContent: 'center'
             }}
-            //onPress={navigation.navigate('Home')}
+          onPress={handleBackHome}
           >
             <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Back Home</Text>
           </TouchableOpacity>

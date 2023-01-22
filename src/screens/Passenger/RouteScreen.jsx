@@ -118,7 +118,7 @@ export const RouteScreen = ({ navigation, route }) => {
                 })}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: COLORS.blue, marginRight: 5, fontWeight: "700", ...FONTS.body3 }}>{index + 1}.</Text><Text style={{ color: COLORS.blue, fontWeight: "200", ...FONTS.h4 }}>{item.routeName}</Text>
+                  <Text style={{ color: COLORS.black, marginRight: 5, fontWeight: "700", ...FONTS.body3 }}>{index + 1}.</Text><Text style={{ color: COLORS.black, fontWeight: "200", ...FONTS.h4 }}>{item.routeName}</Text>
                 </View>
                 <View>
                   <Image source={icons.forward} resizeMode="contain" style={{
