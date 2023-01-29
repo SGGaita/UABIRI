@@ -10,8 +10,8 @@ import {
   Alert
 } from 'react-native'
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView'
-import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
-import { SearchBar, Timer, Filter } from '../../components/index'
+import { COLORS, SIZES, FONTS, icons, images } from '../constants'
+import { SearchBar, Timer, Filter } from '../components/index'
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage'
 import * as Animatable from 'react-native-animatable';

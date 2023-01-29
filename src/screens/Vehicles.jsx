@@ -1,7 +1,7 @@
 import { View, Text, KeyboardAvoidingView, StyleSheet, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { Filter, Timer } from '../../components'
-import { COLORS, FONTS, SIZES, icons, images } from '../../constants';
+import { Filter, Timer } from '../components'
+import { COLORS, FONTS, SIZES, icons, images } from '../constants';
 import * as Animatable from 'react-native-animatable';
 
 export const Vehicles = ({ navigation, route }) => {
@@ -106,7 +106,7 @@ export const Vehicles = ({ navigation, route }) => {
                         paddingHorizontal: 15,
                         flexDirection: 'row',
                       }}
-                      onPress={() => navigation.navigate("Payment", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
+                      onPress={() => navigation.navigate("SeatPicker", { data: routeData, paymentData: paymentData3, vehicle: item.vehicleRegistration })}
                     >
                       <View style={{ flex: 1, alignContent: "center", justifyContent: "center", borderRadius: 5 }}>
                         <Text style={{ color: COLORS.black, fontWeight: "600", ...FONTS.h4 }}>{index + 1}.{item.vehicleRegistration}</Text>

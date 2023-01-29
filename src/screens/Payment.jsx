@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   Alert
 } from 'react-native'
-import { Timer } from '../../components'
-import { COLORS, SIZES, FONTS, icons, images } from '../../constants'
+import { Timer } from '../components'
+import { COLORS, SIZES, FONTS, icons, images } from '../constants'
 import AsyncStorage from '@react-native-community/async-storage'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,7 +21,7 @@ import firestore from '@react-native-firebase/firestore';
 export const Payment = ({ navigation, route }) => {
 
 
-  const { data, saccoName, paymentData, vehicle } = route.params
+  const { data, saccoName, paymentData, vehicle, totalseats, seats } = route.params
   const [schedule, setSchedule] = useState(data.scheduleCost)
   const [amount, setAmount] = useState()
   const [paymentData1, setPaymentData] = useState({ ...paymentData, vehicleRegistration: vehicle })
@@ -33,6 +33,8 @@ export const Payment = ({ navigation, route }) => {
   var date = new Date()
 
   useEffect(() => {
+
+    console.log("Route parameters", totalseats)
     //get the time from the date value and pass it through the 24hr converter
     var convertedTime = convertTime(date.toLocaleTimeString())
     //Filter Data passed from route.params to check which falls between specific time range and return Amount value
@@ -87,7 +89,9 @@ export const Payment = ({ navigation, route }) => {
         "saccoName": `${paymentData1.saccoName}`,
         "routeName": `${paymentData1.routeName}`,
         "vehicleRegistration": `${paymentData1.vehicleRegistration}`,
-        "amount": 1
+        "amount": 1 * `${totalseats}`,
+        "totalseats": `${totalseats}`,
+        "seats":`${seats}`
       }),
       // Adding headers to the request
       headers: {
@@ -193,7 +197,7 @@ export const Payment = ({ navigation, route }) => {
         flexDirection: "column"
       }}>
         <View style={{
-          flex: 1,
+          flex: 2,
           flexDirection: "column"
         }}>
           <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Date:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{date.toLocaleDateString()}</Text></View>
@@ -201,7 +205,10 @@ export const Payment = ({ navigation, route }) => {
           <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Sacco Name:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.saccoName}</Text></View>
           <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Route :</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.routeName}</Text></View>
           <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Vehicle Registration:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{paymentData1.vehicleRegistration}</Text></View>
-          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Total payable:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{amount}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Seat number:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{seats}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Total Seats booked:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{totalseats}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Fare per seat:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{amount}</Text></View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}><Text style={{ color: COLORS.black, marginRight: 5, ...FONTS.h3 }}>Total payable:</Text><Text style={{ color: COLORS.black, ...FONTS.body3 }}>{amount * totalseats}</Text></View>
         </View>
 
         <View style={{

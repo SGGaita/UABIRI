@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { KeyboardAvoidingView, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
-import { COLORS, SIZES, icons, images, FONTS } from '../../constants'
+import { COLORS, SIZES, icons, images, FONTS } from '../constants'
 import * as Animatable from 'react-native-animatable';
-import { Filter, Timer } from '../../components/index'
+import { Filter, Timer } from '../components/index'
 
 export const RouteScreen = ({ navigation, route }) => {
 

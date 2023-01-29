@@ -14,10 +14,10 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage'
 import * as Animatable from 'react-native-animatable';
-import { COLORS, SIZES, icons, images, FONTS } from '../../constants'
-import { Timer } from '../../components/'
+import { COLORS, SIZES, icons, images, FONTS } from '../constants'
+import { Timer } from '../components'
 
-export const Passenger = ({ navigation }) => {
+export const Login = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null)
   const [validNumber, setValidNumber] = useState('');
   const [isValid, setIsValid] = useState(false);

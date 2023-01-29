@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { createStackNavigator } from "@react-navigation-stack";
 import { NavigationContainer } from '@react-navigation/native';
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import {
   OnboardingScreen,
-  Login,
   Vehicles,
   Payment,
   Receipt,
-  Passenger,
+  Login,
   Home,
-  Conductor,
-  ProfileScreen,
-  SearchRoutes,
-  VehicleOwner,
   RouteScreen,
   InformationScreen,
   ResetScreen,
-  ConfirmPayment
+  SeatPicker,
 } from './src/screens/index'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen'
@@ -63,17 +57,13 @@ const App = () => {
             headerShown: false
           }} initialRouteName="OnboardingScreen">
           <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Passenger" component={Passenger} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="RouteScreen" component={RouteScreen} />
           <Stack.Screen name="Vehicles" component={Vehicles} />
+          <Stack.Screen name="SeatPicker" component={SeatPicker} />
           <Stack.Screen name="Payment" component={Payment} />
-          <Stack.Screen name="ConfirmPayment" component={ConfirmPayment}/>
           <Stack.Screen name="Receipt" component={Receipt} />
-          <Stack.Screen name="Conductor" component={Conductor} />
-          <Stack.Screen name="Owner" component={VehicleOwner} />
           <Stack.Screen name="Information" component={InformationScreen} />
           <Stack.Screen name="ResetScreen" component={ResetScreen} />
         </Stack.Navigator>
@@ -85,18 +75,14 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false
-          }} initialRouteName="Receipt">
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Passenger" component={Passenger} />
+          }} initialRouteName="Login">
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="RouteScreen" component={RouteScreen} />
           <Stack.Screen name="Vehicles" component={Vehicles} />
+          <Stack.Screen name="SeatPicker" component={SeatPicker} />
           <Stack.Screen name="Payment" component={Payment} />
-          <Stack.Screen name="ConfirmPayment" component={ConfirmPayment}/>
           <Stack.Screen name="Receipt" component={Receipt} />
-          <Stack.Screen name="Conductor" component={Conductor} />
-          <Stack.Screen name="Owner" component={VehicleOwner} />
           <Stack.Screen name="Information" component={InformationScreen} />
           <Stack.Screen name="ResetScreen" component={ResetScreen} />
         </Stack.Navigator>
